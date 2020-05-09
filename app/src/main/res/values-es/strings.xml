@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Habitissimo</string>
+    <string name="contact">Contacto</string>
 
     <string name="quotation_requests">Mis Solicitudes de Presupuesto</string>
+    <string name="new_quotation">Pedir nuevo presupuesto</string>
+
 </resources>

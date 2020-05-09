@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">Habitissimo</string>
+    <string name="app_name" translatable="false">Habitissimo</string>
+
+    <string name="contact">Contact</string>
 
     <string name="quotation_requests">My Quotation Requests</string>
+    <string name="new_quotation">Request new Quotation</string>
 
 </resources>
