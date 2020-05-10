@@ -1,7 +1,10 @@
 <resources>
     <string name="contact">Contacto</string>
+    <string name="contact_details">Datos de Contacto</string>
+    <string name="contact_copy">Nombre: %1$s\nTeléfono: %2$s\nEmail: %3$s\nUbicación: %4$s</string>
+    <string name="contact_copied">Datos de Contacto copiados al portapapeles</string>
 
     <string name="quotation_requests">Mis Solicitudes de Presupuesto</string>
-    <string name="new_quotation">Pedir nuevo presupuesto</string>
+    <string name="new_quotation">Pedir presupuesto</string>
 
 </resources>
