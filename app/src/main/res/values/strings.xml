@@ -9,4 +9,13 @@
     <string name="quotation_requests">My Quotation Requests</string>
     <string name="new_quotation">Ask for Quotation</string>
 
+    <string name="options_title">What to do with this quotation?</string>
+    <string name="options_share">Share</string>
+    <string name="options_edit">Edit</string>
+    <string name="options_remove">Remove</string>
+
+    <string name="NT_options_share" translatable="false">quotation_share</string>
+    <string name="NT_options_edit" translatable="false">quotation_edit</string>
+    <string name="NT_options_remove" translatable="false">quotation_remove</string>
+
 </resources>

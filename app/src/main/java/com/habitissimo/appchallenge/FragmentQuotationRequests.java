@@ -56,7 +56,8 @@ public class FragmentQuotationRequests extends Fragment {
         adaptador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Pulsado Presupuesto " + recView.getChildAdapterPosition(v), Toast.LENGTH_SHORT).show();
+                DialogBottomSheetOptions bottomSheetPayment = new DialogBottomSheetOptions();
+                bottomSheetPayment.show(getFragmentManager(), "dialog_bottom_sheet_options");
             }
         });
 
@@ -81,7 +82,7 @@ public class FragmentQuotationRequests extends Fragment {
         // Contact Details fields
         String name = "Antonio Llinares";
         String phone = "626 42 39 01";
-        String email = "antonito@ic_email.com";
+        String email = "antonito@email.com";
         String location = "Palma de Mallorca, 07013";
 
         // Create and show the dialog.

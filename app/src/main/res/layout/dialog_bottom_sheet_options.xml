@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_big"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:gravity="start"
+        android:textSize="@dimen/text_small"
+        android:text="@string/options_title"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/layout_option_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_big">
+
+        <ImageView
+            android:layout_width="@dimen/image_small"
+            android:layout_height="@dimen/image_small"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_share"
+            android:tint="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_gravity="center_vertical"
+            android:gravity="start"
+            android:textSize="@dimen/text_small"
+            android:text="@string/options_share" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:alpha="0.5"/>
+
+    <LinearLayout
+        android:id="@+id/layout_option_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_big">
+
+        <ImageView
+            android:layout_width="@dimen/image_small"
+            android:layout_height="@dimen/image_small"
+            android:layout_gravity="center_vertical"
+            android:tint="@color/colorPrimaryDark"
+            android:src="@drawable/ic_edit" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_gravity="center_vertical"
+            android:gravity="start"
+            android:textSize="@dimen/text_small"
+            android:text="@string/options_edit" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:alpha="0.5"/>
+
+    <LinearLayout
+        android:id="@+id/layout_option_remove"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_big">
+
+        <ImageView
+            android:layout_width="@dimen/image_small"
+            android:layout_height="@dimen/image_small"
+            android:layout_gravity="center_vertical"
+            android:tint="@color/colorPrimaryDark"
+            android:src="@drawable/ic_trash" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_gravity="center_vertical"
+            android:gravity="start"
+            android:textSize="@dimen/text_small"
+            android:text="@string/options_remove" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
