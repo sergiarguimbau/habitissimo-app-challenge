@@ -23,11 +23,11 @@ public class DialogContact extends DialogFragment {
 
     public DialogContact() { /*empty*/ }
 
-    public DialogContact(String name, String phone, String email, String location) {
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-        this.location = location;
+    public DialogContact(Contact contact) {
+        this.name = contact.name;
+        this.phone = contact.phone;
+        this.email = contact.email;
+        this.location = contact.location;
     }
 
     @Override

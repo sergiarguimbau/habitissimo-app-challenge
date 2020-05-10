@@ -32,16 +32,20 @@ public class FragmentQuotationRequests extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_quotation_requests, container, false);
 
+        // Create contact examples
+        final Contact contact_antonio = new Contact("Antonio Llinares", "626 42 39 01", "antonito@email.com", "Palma de Mallorca, 07013");
+        Contact contact_maria = new Contact("María Salvado", "692 39 29 10", "maria@email.com", "Murcia, 30110");
+
         quotations = new ArrayList<Quotation>();
 
-        quotations.add(new Quotation(R.drawable.cat_construccion, "Construir muro", "Desearía construir un muro en el patio de mi casa"));
-        quotations.add(new Quotation(R.drawable.cat_reformas,"Reparación tubería", "Quiero reparar el baño que el cuaarto piso tiene goteras. Necesito ayuda urgente" ));
-        quotations.add(new Quotation(R.drawable.cat_mudanzas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado"));
-        quotations.add(new Quotation(R.drawable.cat_mantenimiento,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado"));
-        quotations.add(new Quotation(R.drawable.cat_tecnicos,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado"));
-        quotations.add(new Quotation(R.drawable.cat_tiendas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado"));
-        quotations.add(new Quotation(R.drawable.cat_instaladores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado"));
-        quotations.add(new Quotation(R.drawable.cat_obras_menores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado"));
+        quotations.add(new Quotation(R.drawable.cat_construccion, "Construir muro", "Desearía construir un muro en el patio de mi casa", contact_antonio));
+        quotations.add(new Quotation(R.drawable.cat_reformas,"Reparación tubería", "Quiero reparar el baño que el cuaarto piso tiene goteras. Necesito ayuda urgente", contact_maria));
+        quotations.add(new Quotation(R.drawable.cat_mudanzas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
+        quotations.add(new Quotation(R.drawable.cat_mantenimiento,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
+        quotations.add(new Quotation(R.drawable.cat_tecnicos,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
+        quotations.add(new Quotation(R.drawable.cat_tiendas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
+        quotations.add(new Quotation(R.drawable.cat_instaladores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
+        quotations.add(new Quotation(R.drawable.cat_obras_menores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
 
         recView = (RecyclerView) view.findViewById(R.id.rec_view_quotation);
         recView.setHasFixedSize(false);
@@ -49,7 +53,7 @@ public class FragmentQuotationRequests extends Fragment {
         final QuotationAdapter adaptador = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
             @Override
             public void onPositionClicked(int position) {
-                openContactDialog();
+                openContactDialog(quotations.get(position).contact);
             }
         });
 
@@ -70,7 +74,7 @@ public class FragmentQuotationRequests extends Fragment {
         return view;
     }
 
-    private void openContactDialog(){
+    private void openContactDialog(Contact contact){
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag("dialog_contact");
@@ -79,14 +83,8 @@ public class FragmentQuotationRequests extends Fragment {
         }
         ft.addToBackStack(null);
 
-        // Contact Details fields
-        String name = "Antonio Llinares";
-        String phone = "626 42 39 01";
-        String email = "antonito@email.com";
-        String location = "Palma de Mallorca, 07013";
-
         // Create and show the dialog.
-        DialogFragment newFragment = new DialogContact(name, phone, email, location);
+        DialogFragment newFragment = new DialogContact(contact);
         newFragment.show(ft, "dialog_contact");
     }
 
