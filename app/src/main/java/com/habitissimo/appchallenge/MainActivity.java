@@ -13,8 +13,11 @@ public class MainActivity extends AppCompatActivity {
 
         setTitle(getString(R.string.quotation_requests));
 
-        // Inflate fragment_container with FragmentQuotationRequests
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, new FragmentQuotationRequests()).commit();
+        // Inflate fragment_container with FragmentQuotationRequests (only once)
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, new FragmentQuotationRequests()).commit();
+        }
+
     }
 }
