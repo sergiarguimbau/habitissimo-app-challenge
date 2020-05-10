@@ -93,7 +93,7 @@
             android:layout_gravity="center_vertical"
             android:gravity="start"
             android:textSize="@dimen/text_small"
-            android:text="@string/options_remove" />
+            android:text="@string/options_delete" />
 
     </LinearLayout>
 

@@ -51,7 +51,7 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
         option_remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onOptionMethodClicked(position, getString(R.string.NT_options_remove));
+                listener.onOptionMethodClicked(position, getString(R.string.NT_options_delete));
                 dismiss();
             }
         });

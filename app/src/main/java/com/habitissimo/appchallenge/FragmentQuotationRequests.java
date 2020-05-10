@@ -12,7 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -27,10 +31,19 @@ public class FragmentQuotationRequests extends Fragment {
     private RecyclerView recView;
     private ArrayList<Quotation> quotations;
 
+    private BottomSheetBehavior bottomSheetBehavior;
+    private FloatingActionButton add_quotation;
+    private LinearLayout layout_bottom_sheet;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_quotation_requests, container, false);
+
+        add_quotation = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        layout_bottom_sheet = (LinearLayout) view.findViewById(R.id.layout_bottom_sheet);
+        View bottomSheet = view.findViewById(R.id.bottom_sheet_add_quotation);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         // Create contact examples
         final Contact contact_antonio = new Contact("Antonio Llinares", "626 42 39 01", "antonito@email.com", "Palma de Mallorca, 07013");
@@ -73,6 +86,20 @@ public class FragmentQuotationRequests extends Fragment {
         recView.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
 
         recView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL_LIST));
+
+        add_quotation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+
+        layout_bottom_sheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
 
         return view;
     }

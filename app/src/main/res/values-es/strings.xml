@@ -6,10 +6,20 @@
 
     <string name="quotation_requests">Mis Solicitudes de Presupuesto</string>
     <string name="new_quotation">Pedir presupuesto</string>
+    <string name="select_category">¿Qué necesitas?</string>
 
     <string name="options_title">¿Qué deseas hacer con este presupuesto?</string>
     <string name="options_share">Compartir</string>
     <string name="options_edit">Editar</string>
-    <string name="options_remove">Eliminar</string>
+    <string name="options_delete">Eliminar</string>
+
+    <string name="cat_construccion">Construcción</string>
+    <string name="cat_reformas">Reformas</string>
+    <string name="cat_mudanzas">Mudanzas</string>
+    <string name="cat_tecnicos">Técnicos</string>
+    <string name="cat_obras_menores">Obras Menores</string>
+    <string name="cat_instaladores">Instaladores</string>
+    <string name="cat_mantenimiento">Mantenimiento</string>
+    <string name="cat_tiendas">Tiendas</string>
 
 </resources>

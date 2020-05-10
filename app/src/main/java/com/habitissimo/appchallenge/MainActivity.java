@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements DialogBottomSheet
             Toast.makeText(getApplicationContext(), "Share clicked " + position, Toast.LENGTH_SHORT).show();
         } else if (option.equals(getString(R.string.NT_options_edit))) {
             Toast.makeText(getApplicationContext(), "Edit clicked " + position, Toast.LENGTH_SHORT).show();
-        } else if (option.equals(getString(R.string.NT_options_remove))) {
+        } else if (option.equals(getString(R.string.NT_options_delete))) {
             Toast.makeText(getApplicationContext(), "Remove clicked " + position, Toast.LENGTH_SHORT).show();
         }
     }
