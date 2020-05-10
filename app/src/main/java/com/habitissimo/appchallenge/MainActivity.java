@@ -1,6 +1,7 @@
 package com.habitissimo.appchallenge;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.widget.Toast;
@@ -23,14 +24,14 @@ public class MainActivity extends AppCompatActivity implements DialogBottomSheet
     }
 
     @Override
-    public void onOptionMethodClicked(String method) {
+    public void onOptionMethodClicked(int position, String option) {
 
-        if (method.equals(getString(R.string.NT_options_share))) {
-            Toast.makeText(getApplicationContext(), "Share clicked", Toast.LENGTH_SHORT).show();
-        } else if (method.equals(getString(R.string.NT_options_edit))) {
-            Toast.makeText(getApplicationContext(), "Edit clicked", Toast.LENGTH_SHORT).show();
-        } else if (method.equals(getString(R.string.NT_options_remove))) {
-            Toast.makeText(getApplicationContext(), "Remove clicked", Toast.LENGTH_SHORT).show();
+        if (option.equals(getString(R.string.NT_options_share))) {
+            Toast.makeText(getApplicationContext(), "Share clicked " + position, Toast.LENGTH_SHORT).show();
+        } else if (option.equals(getString(R.string.NT_options_edit))) {
+            Toast.makeText(getApplicationContext(), "Edit clicked " + position, Toast.LENGTH_SHORT).show();
+        } else if (option.equals(getString(R.string.NT_options_remove))) {
+            Toast.makeText(getApplicationContext(), "Remove clicked " + position, Toast.LENGTH_SHORT).show();
         }
     }
 }

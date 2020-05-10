@@ -16,6 +16,8 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
 
     private BottomSheetOptionsListener listener;
 
+    public DialogBottomSheetOptions() {}
+
 
     @Nullable
     @Override
@@ -27,11 +29,13 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
         LinearLayout option_edit = v.findViewById(R.id.layout_option_edit);
         LinearLayout option_remove = v.findViewById(R.id.layout_option_remove);
 
+        final int position = getArguments().getInt("position", 0);
+
         // Options OnClickListeners
         option_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onOptionMethodClicked(getString(R.string.NT_options_share));
+                listener.onOptionMethodClicked(position, getString(R.string.NT_options_share));
                 dismiss();
             }
         });
@@ -39,7 +43,7 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
         option_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onOptionMethodClicked(getString(R.string.NT_options_edit));
+                listener.onOptionMethodClicked(position, getString(R.string.NT_options_edit));
                 dismiss();
             }
         });
@@ -47,7 +51,7 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
         option_remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onOptionMethodClicked(getString(R.string.NT_options_remove));
+                listener.onOptionMethodClicked(position, getString(R.string.NT_options_remove));
                 dismiss();
             }
         });
@@ -56,7 +60,7 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
     }
 
     public interface BottomSheetOptionsListener {
-        void onOptionMethodClicked(String method);
+        void onOptionMethodClicked(int position, String method);
     }
 
     @Override

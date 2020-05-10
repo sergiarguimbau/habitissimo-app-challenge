@@ -61,6 +61,9 @@ public class FragmentQuotationRequests extends Fragment {
             @Override
             public void onClick(View v) {
                 DialogBottomSheetOptions bottomSheetPayment = new DialogBottomSheetOptions();
+                Bundle args = new Bundle();
+                args.putSerializable("position", recView.getChildAdapterPosition(v));
+                bottomSheetPayment.setArguments(args);
                 bottomSheetPayment.show(getFragmentManager(), "dialog_bottom_sheet_options");
             }
         });
