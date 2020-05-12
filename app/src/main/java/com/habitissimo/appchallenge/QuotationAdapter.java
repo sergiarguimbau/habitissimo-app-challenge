@@ -74,7 +74,7 @@ public class QuotationAdapter
     @Override
     public QuotationViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.list_quotation_item, viewGroup, false);
+                .inflate(R.layout.item_quotation, viewGroup, false);
 
         itemView.setOnClickListener(this);
 

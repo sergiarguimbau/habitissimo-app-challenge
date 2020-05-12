@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_columnWeight="1"
+    android:layout_marginStart="@dimen/margin_big"
+    android:layout_marginEnd="@dimen/margin_big"
+    card_view:contentPaddingLeft="@dimen/margin_medium"
+    card_view:contentPaddingRight="@dimen/margin_medium"
+    card_view:contentPaddingTop="@dimen/margin_big"
+    card_view:contentPaddingBottom="@dimen/margin_big"
+    card_view:cardElevation="8dp"
+    card_view:cardCornerRadius="8dp" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image_category"
+            android:layout_width="@dimen/image_big"
+            android:layout_height="@dimen/image_big"
+            android:layout_gravity="center"
+            android:tint="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/text_category"
+            android:layout_marginTop="@dimen/margin_tiny"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_tiny"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,6 +37,8 @@ public class FragmentQuotationRequests extends Fragment {
     private FloatingActionButton add_quotation;
     private LinearLayout layout_bottom_sheet;
 
+    GridLayout grid_category;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -42,8 +46,39 @@ public class FragmentQuotationRequests extends Fragment {
 
         add_quotation = (FloatingActionButton) view.findViewById(R.id.fab_add);
         layout_bottom_sheet = (LinearLayout) view.findViewById(R.id.layout_bottom_sheet);
-        View bottomSheet = view.findViewById(R.id.bottom_sheet_add_quotation);
+        View bottomSheet = view.findViewById(R.id.bottom_sheet_new_quotation);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        grid_category = view.findViewById(R.id.grid_category);
+
+        ArrayList<Integer> cat_images = new ArrayList<>();
+        cat_images.add(R.drawable.cat_construccion);
+        cat_images.add(R.drawable.cat_reformas);
+        cat_images.add(R.drawable.cat_mudanzas);
+        cat_images.add(R.drawable.cat_tecnicos);
+        cat_images.add(R.drawable.cat_obras_menores);
+        cat_images.add(R.drawable.cat_mantenimiento);
+        cat_images.add(R.drawable.cat_instaladores);
+        cat_images.add(R.drawable.cat_tiendas);
+
+        ArrayList<Integer> cat_texts = new ArrayList<>();
+        cat_texts.add(R.string.cat_construccion);
+        cat_texts.add(R.string.cat_reformas);
+        cat_texts.add(R.string.cat_mudanzas);
+        cat_texts.add(R.string.cat_tecnicos);
+        cat_texts.add(R.string.cat_obras_menores);
+        cat_texts.add(R.string.cat_mantenimiento);
+        cat_texts.add(R.string.cat_instaladores);
+        cat_texts.add(R.string.cat_tiendas);
+
+        for(int i=0; i<cat_images.size(); i++){
+            final View category = inflater.inflate(R.layout.item_category, grid_category, false);
+            ImageView cat_image = (ImageView) category.findViewById(R.id.image_category);
+            cat_image.setImageResource(cat_images.get(i));
+            TextView cat_text = (TextView) category.findViewById(R.id.text_category);
+            cat_text.setText(cat_texts.get(i));
+            grid_category.addView(category);
+        }
 
         // Create contact examples
         final Contact contact_antonio = new Contact("Antonio Llinares", "626 42 39 01", "antonito@email.com", "Palma de Mallorca, 07013");
@@ -73,11 +108,11 @@ public class FragmentQuotationRequests extends Fragment {
         adaptador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogBottomSheetOptions bottomSheetPayment = new DialogBottomSheetOptions();
+                DialogBottomSheetOptions bottomSheetOptions = new DialogBottomSheetOptions();
                 Bundle args = new Bundle();
                 args.putSerializable("position", recView.getChildAdapterPosition(v));
-                bottomSheetPayment.setArguments(args);
-                bottomSheetPayment.show(getFragmentManager(), "dialog_bottom_sheet_options");
+                bottomSheetOptions.setArguments(args);
+                bottomSheetOptions.show(getFragmentManager(), "dialog_bottom_sheet_options");
             }
         });
 

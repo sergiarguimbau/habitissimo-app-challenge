@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_bottom_sheet"
+    android:padding="@dimen/margin_medium">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_medium"
+        android:text="@string/new_quotation"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:textColor="@android:color/background_light"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:textSize="@dimen/text_medium"
+        android:text="@string/select_category"
+        android:textStyle="italic"
+        android:textColor="@android:color/background_light"
+        android:layout_gravity="center_horizontal" />
+
+
+    <GridLayout
+        android:id="@+id/grid_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_gravity="center_horizontal"
+        android:columnCount="2"
+        android:alignmentMode="alignMargins"
+        android:useDefaultMargins="true" />
+
+</LinearLayout>

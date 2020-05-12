@@ -18,11 +18,22 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
 
     public DialogBottomSheetOptions() {}
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            listener = (BottomSheetOptionsListener) context;
+        }catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() +
+                    " must implement BottomSheetOptionsListener");
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.dialog_bottom_sheet_options, container, false);
+        View v = inflater.inflate(R.layout.bottom_sheet_options, container, false);
 
         // Find Bottom Sheet views
         LinearLayout option_share = v.findViewById(R.id.layout_option_share);
@@ -61,17 +72,5 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
 
     public interface BottomSheetOptionsListener {
         void onOptionMethodClicked(int position, String method);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        try {
-            listener = (BottomSheetOptionsListener) context;
-        }catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() +
-                    " must implement BottomSheetOptionsListener");
-        }
     }
 }
