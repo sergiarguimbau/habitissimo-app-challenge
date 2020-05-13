@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout_bottom_sheet"
-    android:padding="@dimen/margin_medium">
+    android:padding="@dimen/margin_medium"
+    android:animateLayoutChanges="true">
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,6 +37,15 @@
         android:layout_gravity="center_horizontal"
         android:columnCount="2"
         android:alignmentMode="alignMargins"
-        android:useDefaultMargins="true" />
+        android:useDefaultMargins="true"
+        android:visibility="visible"/>
+
+    <ListView
+        android:id="@+id/list_subcategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@android:color/background_light"
+        android:visibility="gone"/>
 
 </LinearLayout>

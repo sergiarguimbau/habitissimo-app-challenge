@@ -1,6 +1,7 @@
 package com.habitissimo.appchallenge;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -10,12 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -35,10 +41,13 @@ public class FragmentQuotationRequests extends Fragment {
 
     private BottomSheetBehavior bottomSheetBehavior;
     private FloatingActionButton add_quotation;
+    private GridLayout grid_category;
+    private ListView list_subcat;
     private LinearLayout layout_bottom_sheet;
 
-    GridLayout grid_category;
+    int step_new_quotation = 0;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -49,7 +58,8 @@ public class FragmentQuotationRequests extends Fragment {
         View bottomSheet = view.findViewById(R.id.bottom_sheet_new_quotation);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
-        grid_category = view.findViewById(R.id.grid_category);
+        grid_category = (GridLayout) view.findViewById(R.id.grid_category);
+        list_subcat = (ListView) view.findViewById(R.id.list_subcategory);
 
         ArrayList<Integer> cat_images = new ArrayList<>();
         cat_images.add(R.drawable.cat_construccion);
@@ -73,12 +83,57 @@ public class FragmentQuotationRequests extends Fragment {
 
         for(int i=0; i<cat_images.size(); i++){
             final View category = inflater.inflate(R.layout.item_category, grid_category, false);
+            category.setId(View.generateViewId());
             ImageView cat_image = (ImageView) category.findViewById(R.id.image_category);
             cat_image.setImageResource(cat_images.get(i));
             TextView cat_text = (TextView) category.findViewById(R.id.text_category);
             cat_text.setText(cat_texts.get(i));
             grid_category.addView(category);
+            final String selected_category = getString(cat_texts.get(i));
+
+            category.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), selected_category, Toast.LENGTH_SHORT).show();
+                    grid_category.setVisibility(View.GONE);
+                    list_subcat.setVisibility(View.VISIBLE);
+                }
+            });
         }
+
+        // Populate List View
+        final String[] subcats = new String[]{"Pintores","Tapiceros","Cerrajeros"};
+        list_subcat.setAdapter(new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
+
+        // Modify scroll events to prevent Bottom Sheet from NestedScrollView to collapse
+        list_subcat.setOnTouchListener(new ListView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow NestedScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow NestedScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+
+                // Handle ListView touch events.
+                v.onTouchEvent(event);
+                return true;
+            }
+        });
+
+        list_subcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                Toast.makeText(getContext(), subcats[position], Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Create contact examples
         final Contact contact_antonio = new Contact("Antonio Llinares", "626 42 39 01", "antonito@email.com", "Palma de Mallorca, 07013");
