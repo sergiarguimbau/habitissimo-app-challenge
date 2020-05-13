@@ -12,7 +12,7 @@
         android:layout_height="match_parent" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/bottom_sheet_new_quotation"
+        android:id="@+id/bottom_sheet_add_quotation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorAccent"
@@ -21,7 +21,7 @@
         app:behavior_peekHeight="10dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <include layout="@layout/bottom_sheet_new_quotation" />
+        <include layout="@layout/bottom_sheet_add_quotation" />
 
     </androidx.core.widget.NestedScrollView>
 
@@ -33,7 +33,7 @@
         android:src="@drawable/ic_add"
         android:tint="@android:color/background_light"
         app:backgroundTint="@color/colorPrimary"
-        app:layout_anchor="@+id/bottom_sheet_new_quotation"
+        app:layout_anchor="@+id/bottom_sheet_add_quotation"
         app:layout_anchorGravity="top|end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

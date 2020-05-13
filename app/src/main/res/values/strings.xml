@@ -9,6 +9,11 @@
     <string name="quotation_requests">My Quotation Requests</string>
     <string name="new_quotation">Ask for Quotation</string>
     <string name="select_category">What do you need?</string>
+    <string name="select_subcategory">Select a service:</string>
+    <string name="put_description">Describe the work to do:</string>
+    <string name="description_hint">I wish&#8230;</string>
+    <string name="max_edittext">Maximum lenth 500 chars</string>
+    <string name="send">Send</string>
 
     <string name="options_title">What to do with this quotation?</string>
     <string name="options_share">Share</string>

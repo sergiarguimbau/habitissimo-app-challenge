@@ -10,12 +10,16 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,14 +40,24 @@ public class FragmentQuotationRequests extends Fragment {
         // Required empty public constructor
     }
 
-    private RecyclerView recView;
+    private RecyclerView recView_quotation;
     private ArrayList<Quotation> quotations;
 
     private BottomSheetBehavior bottomSheetBehavior;
-    private FloatingActionButton add_quotation;
+    private FloatingActionButton fab_add_quotation;
+
     private GridLayout grid_category;
     private ListView list_subcat;
+
     private LinearLayout layout_bottom_sheet;
+    private ImageView image_back;
+    private TextView text_select_category;
+    private TextView text_select_subcategory;
+    private TextView text_category_selected;
+    private TextView text_subcategory_selected;
+    private TextView text_put_descripton;
+    private EditText editText_description;
+    private Button button_send;
 
     int step_new_quotation = 0;
 
@@ -53,14 +67,25 @@ public class FragmentQuotationRequests extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_quotation_requests, container, false);
 
-        add_quotation = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        recView_quotation = (RecyclerView) view.findViewById(R.id.rec_view_quotation);
+        fab_add_quotation = (FloatingActionButton) view.findViewById(R.id.fab_add);
         layout_bottom_sheet = (LinearLayout) view.findViewById(R.id.layout_bottom_sheet);
-        View bottomSheet = view.findViewById(R.id.bottom_sheet_new_quotation);
+        View bottomSheet = view.findViewById(R.id.bottom_sheet_add_quotation);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
         grid_category = (GridLayout) view.findViewById(R.id.grid_category);
         list_subcat = (ListView) view.findViewById(R.id.list_subcategory);
 
+        image_back = (ImageView) view.findViewById(R.id.image_back);
+        text_select_category = (TextView) view.findViewById(R.id.text_select_category);
+        text_select_subcategory = (TextView) view.findViewById(R.id.text_select_subcategory);
+        text_category_selected = (TextView) view.findViewById(R.id.text_category_selected);
+        text_subcategory_selected = (TextView) view.findViewById(R.id.text_subcategory_selected);
+        text_put_descripton = (TextView) view.findViewById(R.id.text_put_description);
+        editText_description = (EditText) view.findViewById(R.id.edittext_description);
+        button_send = (Button) view.findViewById(R.id.button_send);
+
+        // Category images
         ArrayList<Integer> cat_images = new ArrayList<>();
         cat_images.add(R.drawable.cat_construccion);
         cat_images.add(R.drawable.cat_reformas);
@@ -71,6 +96,7 @@ public class FragmentQuotationRequests extends Fragment {
         cat_images.add(R.drawable.cat_instaladores);
         cat_images.add(R.drawable.cat_tiendas);
 
+        // Category names (must be same order as cat_images)
         ArrayList<Integer> cat_texts = new ArrayList<>();
         cat_texts.add(R.string.cat_construccion);
         cat_texts.add(R.string.cat_reformas);
@@ -81,6 +107,7 @@ public class FragmentQuotationRequests extends Fragment {
         cat_texts.add(R.string.cat_instaladores);
         cat_texts.add(R.string.cat_tiendas);
 
+        // Inflate GridLayout with Category items
         for(int i=0; i<cat_images.size(); i++){
             final View category = inflater.inflate(R.layout.item_category, grid_category, false);
             category.setId(View.generateViewId());
@@ -91,17 +118,16 @@ public class FragmentQuotationRequests extends Fragment {
             grid_category.addView(category);
             final String selected_category = getString(cat_texts.get(i));
 
+            // Category Item selected
             category.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getContext(), selected_category, Toast.LENGTH_SHORT).show();
-                    grid_category.setVisibility(View.GONE);
-                    list_subcat.setVisibility(View.VISIBLE);
+                    go_forward_new_quotation(selected_category);
                 }
             });
         }
 
-        // Populate List View
+        // Populate List View with Subcategories
         final String[] subcats = new String[]{"Pintores","Tapiceros","Cerrajeros"};
         list_subcat.setAdapter(new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
@@ -129,9 +155,10 @@ public class FragmentQuotationRequests extends Fragment {
             }
         });
 
+        // Subcategory Item selected
         list_subcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                Toast.makeText(getContext(), subcats[position], Toast.LENGTH_SHORT).show();
+                go_forward_new_quotation(subcats[position]);
             }
         });
 
@@ -139,8 +166,8 @@ public class FragmentQuotationRequests extends Fragment {
         final Contact contact_antonio = new Contact("Antonio Llinares", "626 42 39 01", "antonito@email.com", "Palma de Mallorca, 07013");
         Contact contact_maria = new Contact("María Salvado", "692 39 29 10", "maria@email.com", "Murcia, 30110");
 
+        // Create quotation examples
         quotations = new ArrayList<Quotation>();
-
         quotations.add(new Quotation(R.drawable.cat_construccion, "Construir muro", "Desearía construir un muro en el patio de mi casa", contact_antonio));
         quotations.add(new Quotation(R.drawable.cat_reformas,"Reparación tubería", "Quiero reparar el baño que el cuaarto piso tiene goteras. Necesito ayuda urgente", contact_maria));
         quotations.add(new Quotation(R.drawable.cat_mudanzas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
@@ -150,40 +177,41 @@ public class FragmentQuotationRequests extends Fragment {
         quotations.add(new Quotation(R.drawable.cat_instaladores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
         quotations.add(new Quotation(R.drawable.cat_obras_menores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
 
-        recView = (RecyclerView) view.findViewById(R.id.rec_view_quotation);
-        recView.setHasFixedSize(false);
-
-        final QuotationAdapter adaptador = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
+        // Button Contact from RecyclerView Item selected
+        final QuotationAdapter quotationAdapter = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
             @Override
             public void onPositionClicked(int position) {
                 openContactDialog(quotations.get(position).contact);
             }
         });
 
-        adaptador.setOnClickListener(new View.OnClickListener() {
+        // RecyclerView Item selected
+        quotationAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogBottomSheetOptions bottomSheetOptions = new DialogBottomSheetOptions();
                 Bundle args = new Bundle();
-                args.putSerializable("position", recView.getChildAdapterPosition(v));
+                args.putSerializable("position", recView_quotation.getChildAdapterPosition(v));
                 bottomSheetOptions.setArguments(args);
                 bottomSheetOptions.show(getFragmentManager(), "dialog_bottom_sheet_options");
             }
         });
 
-        recView.setAdapter(adaptador);
+        // Populate RecyclerView Quotations
+        recView_quotation.setHasFixedSize(false);
+        recView_quotation.setAdapter(quotationAdapter);
+        recView_quotation.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
+        recView_quotation.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL_LIST));
 
-        recView.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
-
-        recView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL_LIST));
-
-        add_quotation.setOnClickListener(new View.OnClickListener() {
+        // Floating Action Button add new quotation clicked
+        fab_add_quotation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
 
+        // Collapsed Bottom Sheet new quotation clicked
         layout_bottom_sheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -191,11 +219,46 @@ public class FragmentQuotationRequests extends Fragment {
             }
         });
 
+        // Step back inside New Quotation
+        image_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                go_back_new_quotation();
+            }
+        });
+
+        // Notify user about max length reached
+        editText_description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length() == 500){
+                    Toast.makeText(getContext(), getString(R.string.max_edittext), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        // Send Quotation button clicked
+        button_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Send clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return view;
     }
 
     private void openContactDialog(Contact contact){
-
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag("dialog_contact");
         if (prev != null) {
@@ -206,6 +269,54 @@ public class FragmentQuotationRequests extends Fragment {
         // Create and show the dialog.
         DialogFragment newFragment = new DialogContact(contact);
         newFragment.show(ft, "dialog_contact");
+    }
+
+    private void go_back_new_quotation(){
+        switch (step_new_quotation){
+            case 1:
+                grid_category.setVisibility(View.VISIBLE);
+                image_back.setVisibility(View.INVISIBLE);
+                text_category_selected.setVisibility(View.GONE);
+                list_subcat.setVisibility(View.GONE);
+                text_select_subcategory.setVisibility(View.GONE);
+                text_subcategory_selected.setVisibility(View.GONE);
+                break;
+            case 2:
+                list_subcat.setVisibility(View.VISIBLE);
+                text_subcategory_selected.setVisibility(View.GONE);
+                text_put_descripton.setVisibility(View.GONE);
+                editText_description.setVisibility(View.GONE);
+                button_send.setVisibility(View.GONE);
+                break;
+            default:
+                break;
+        }
+        step_new_quotation--;
+    }
+
+    private void go_forward_new_quotation(String param){
+        switch (step_new_quotation){
+            case 0:
+                grid_category.setVisibility(View.GONE);
+                image_back.setVisibility(View.VISIBLE);
+                text_select_category.setVisibility(View.VISIBLE);
+                text_category_selected.setVisibility(View.VISIBLE);
+                text_select_subcategory.setVisibility(View.VISIBLE);
+                list_subcat.setVisibility(View.VISIBLE);
+                text_category_selected.setText(param);
+                break;
+            case 1:
+                list_subcat.setVisibility(View.GONE);
+                text_subcategory_selected.setVisibility(View.VISIBLE);
+                text_put_descripton.setVisibility(View.VISIBLE);
+                editText_description.setVisibility(View.VISIBLE);
+                button_send.setVisibility(View.VISIBLE);
+                text_subcategory_selected.setText(param);
+                break;
+            default:
+                break;
+        }
+        step_new_quotation++;
     }
 
 }
