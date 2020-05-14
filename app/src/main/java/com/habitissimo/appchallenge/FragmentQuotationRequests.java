@@ -201,7 +201,6 @@ public class FragmentQuotationRequests extends Fragment {
         recView_quotation.setHasFixedSize(false);
         recView_quotation.setAdapter(quotationAdapter);
         recView_quotation.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
-        recView_quotation.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL_LIST));
 
         // Floating Action Button add new quotation clicked
         fab_add_quotation.setOnClickListener(new View.OnClickListener() {
