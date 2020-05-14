@@ -94,6 +94,29 @@
         android:visibility="gone" />
 
     <TextView
+        android:id="@+id/text_put_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:textSize="@dimen/text_medium"
+        android:text="@string/put_location"
+        android:textStyle="italic"
+        android:textColor="@android:color/background_light"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/text_location_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:textSize="@dimen/text_medium"
+        android:textStyle="bold"
+        android:textColor="@android:color/background_light"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/text_put_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -104,6 +127,7 @@
         android:textStyle="italic"
         android:textColor="@android:color/background_light"
         android:visibility="gone"/>
+
 
     <GridLayout
         android:id="@+id/grid_category"
@@ -120,6 +144,7 @@
         android:id="@+id/list_subcategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_marginStart="@dimen/margin_big"
         android:layout_marginEnd="@dimen/margin_big"
@@ -130,13 +155,30 @@
         android:id="@+id/edittext_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_marginStart="@dimen/margin_big"
         android:layout_marginEnd="@dimen/margin_big"
         android:padding="@dimen/margin_small"
         android:background="@android:color/background_light"
-        android:hint="@string/description_hint"
+        android:hint="@string/hint_description"
         android:maxLength="500"
+        android:visibility="gone"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/autotext_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_big"
+        android:layout_marginEnd="@dimen/margin_big"
+        android:padding="@dimen/margin_small"
+        android:background="@android:color/background_light"
+        android:inputType="textPostalAddress"
+        android:maxLength="50"
+        android:maxLines="1"
+        android:hint="@string/hint_location"
         android:visibility="gone"/>
 
     <Button

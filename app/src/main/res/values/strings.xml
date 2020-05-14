@@ -11,7 +11,9 @@
     <string name="select_category">What do you need?</string>
     <string name="select_subcategory">Select a service:</string>
     <string name="put_description">Describe the work to do:</string>
-    <string name="description_hint">I wish&#8230;</string>
+    <string name="put_location">Location to search professionals:</string>
+    <string name="hint_description">I wish&#8230;</string>
+    <string name="hint_location">Town or ZIP Code</string>
     <string name="max_edittext">Maximum lenth 500 chars</string>
     <string name="send">Send</string>
 

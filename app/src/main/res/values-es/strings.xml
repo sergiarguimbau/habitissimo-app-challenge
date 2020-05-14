@@ -9,7 +9,9 @@
     <string name="select_category">¿Qué necesitas?</string>
     <string name="select_subcategory">Elige el servicio:</string>
     <string name="put_description">Describe el trabajo a realizar:</string>
-    <string name="description_hint">Desearía&#8230;</string>
+    <string name="put_location">Localización donde buscar profesionales:</string>
+    <string name="hint_description">Desearía&#8230;</string>
+    <string name="hint_location">Municipio o CP</string>
     <string name="max_edittext">Máxima longitud 500 carácteres</string>
     <string name="send">Enviar</string>
 

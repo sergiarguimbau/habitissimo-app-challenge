@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -55,11 +56,14 @@ public class FragmentQuotationRequests extends Fragment {
     private TextView text_select_subcategory;
     private TextView text_category_selected;
     private TextView text_subcategory_selected;
-    private TextView text_put_descripton;
+    private TextView text_put_description;
+    private TextView text_put_location;
+    private TextView text_location_done;
     private EditText editText_description;
+    private AutoCompleteTextView autoText_location;
     private Button button_send;
 
-    int step_new_quotation = 0;
+    int step_add_quotation = 0;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -81,8 +85,11 @@ public class FragmentQuotationRequests extends Fragment {
         text_select_subcategory = (TextView) view.findViewById(R.id.text_select_subcategory);
         text_category_selected = (TextView) view.findViewById(R.id.text_category_selected);
         text_subcategory_selected = (TextView) view.findViewById(R.id.text_subcategory_selected);
-        text_put_descripton = (TextView) view.findViewById(R.id.text_put_description);
+        text_put_description = (TextView) view.findViewById(R.id.text_put_description);
+        text_put_location = (TextView) view.findViewById(R.id.text_put_location);
+        text_location_done = (TextView) view.findViewById(R.id.text_location_done);
         editText_description = (EditText) view.findViewById(R.id.edittext_description);
+        autoText_location = (AutoCompleteTextView) view.findViewById(R.id.autotext_location);
         button_send = (Button) view.findViewById(R.id.button_send);
 
         // Category images
@@ -122,15 +129,21 @@ public class FragmentQuotationRequests extends Fragment {
             category.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    go_forward_new_quotation(selected_category);
+                    go_forward_add_quotation(selected_category);
                 }
             });
         }
 
-        // Populate List View with Subcategories
+        // Populate ListView with Subcategories
         final String[] subcats = new String[]{"Pintores","Tapiceros","Cerrajeros"};
         list_subcat.setAdapter(new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
+
+        // Populate AutoCompleteTextView with Locations
+        final String[] locations = new String[]{ "Palma de Mallorca, 07013", "Barcelona, 08112", "Madrid, 28451", "Murcia, 30110"};
+        autoText_location.setAdapter(new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_dropdown_item_1line, locations));
+        autoText_location.setThreshold(1);
 
         // Modify scroll events to prevent Bottom Sheet from NestedScrollView to collapse
         list_subcat.setOnTouchListener(new ListView.OnTouchListener() {
@@ -158,7 +171,7 @@ public class FragmentQuotationRequests extends Fragment {
         // Subcategory Item selected
         list_subcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                go_forward_new_quotation(subcats[position]);
+                go_forward_add_quotation(subcats[position]);
             }
         });
 
@@ -222,27 +235,30 @@ public class FragmentQuotationRequests extends Fragment {
         image_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                go_back_new_quotation();
+                go_back_add_quotation();
             }
         });
 
         // Notify user about max length reached
         editText_description.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if(charSequence.length() == 500){
                     Toast.makeText(getContext(), getString(R.string.max_edittext), Toast.LENGTH_LONG).show();
                 }
             }
-
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable editable) {}
 
+        });
+
+        autoText_location.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                go_forward_add_quotation(autoText_location.getText().toString());
             }
         });
 
@@ -270,52 +286,91 @@ public class FragmentQuotationRequests extends Fragment {
         newFragment.show(ft, "dialog_contact");
     }
 
-    private void go_back_new_quotation(){
-        switch (step_new_quotation){
+    private void go_back_add_quotation(){
+        step_add_quotation--;
+        update_add_quotation();
+    }
+
+    private void go_forward_add_quotation(String param){
+        step_add_quotation++;
+        update_add_quotation();
+
+        switch (step_add_quotation){
             case 1:
-                grid_category.setVisibility(View.VISIBLE);
-                image_back.setVisibility(View.INVISIBLE);
-                text_category_selected.setVisibility(View.GONE);
-                list_subcat.setVisibility(View.GONE);
-                text_select_subcategory.setVisibility(View.GONE);
-                text_subcategory_selected.setVisibility(View.GONE);
+                text_category_selected.setText(param);
                 break;
             case 2:
-                list_subcat.setVisibility(View.VISIBLE);
+                text_subcategory_selected.setText(param);
+                break;
+            case 3:
+                text_location_done.setText(param);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void update_add_quotation(){
+        switch (step_add_quotation){
+            case 0:
+                image_back.setVisibility(View.INVISIBLE);
+                text_category_selected.setVisibility(View.GONE);
+                text_select_subcategory.setVisibility(View.GONE);
                 text_subcategory_selected.setVisibility(View.GONE);
-                text_put_descripton.setVisibility(View.GONE);
+                text_put_description.setVisibility(View.GONE);
+                text_put_location.setVisibility(View.GONE);
+                text_location_done.setVisibility(View.GONE);
+                grid_category.setVisibility(View.VISIBLE);
+                list_subcat.setVisibility(View.GONE);
+                autoText_location.setVisibility(View.GONE);
                 editText_description.setVisibility(View.GONE);
                 button_send.setVisibility(View.GONE);
                 break;
-            default:
-                break;
-        }
-        step_new_quotation--;
-    }
-
-    private void go_forward_new_quotation(String param){
-        switch (step_new_quotation){
-            case 0:
-                grid_category.setVisibility(View.GONE);
+            case 1:
                 image_back.setVisibility(View.VISIBLE);
-                text_select_category.setVisibility(View.VISIBLE);
                 text_category_selected.setVisibility(View.VISIBLE);
                 text_select_subcategory.setVisibility(View.VISIBLE);
+                text_subcategory_selected.setVisibility(View.GONE);
+                text_put_description.setVisibility(View.GONE);
+                text_put_location.setVisibility(View.GONE);
+                text_location_done.setVisibility(View.GONE);
+                grid_category.setVisibility(View.GONE);
                 list_subcat.setVisibility(View.VISIBLE);
-                text_category_selected.setText(param);
+                autoText_location.setVisibility(View.GONE);
+                editText_description.setVisibility(View.GONE);
+                button_send.setVisibility(View.GONE);
                 break;
-            case 1:
-                list_subcat.setVisibility(View.GONE);
+            case 2:
+                image_back.setVisibility(View.VISIBLE);
+                text_category_selected.setVisibility(View.VISIBLE);
+                text_select_subcategory.setVisibility(View.VISIBLE);
                 text_subcategory_selected.setVisibility(View.VISIBLE);
-                text_put_descripton.setVisibility(View.VISIBLE);
+                text_put_description.setVisibility(View.GONE);
+                text_put_location.setVisibility(View.VISIBLE);
+                text_location_done.setVisibility(View.GONE);
+                grid_category.setVisibility(View.GONE);
+                list_subcat.setVisibility(View.GONE);
+                autoText_location.setVisibility(View.VISIBLE);
+                editText_description.setVisibility(View.GONE);
+                button_send.setVisibility(View.GONE);
+                break;
+            case 3:
+                image_back.setVisibility(View.VISIBLE);
+                text_category_selected.setVisibility(View.VISIBLE);
+                text_select_subcategory.setVisibility(View.VISIBLE);
+                text_subcategory_selected.setVisibility(View.VISIBLE);
+                text_put_description.setVisibility(View.VISIBLE);
+                text_put_location.setVisibility(View.VISIBLE);
+                text_location_done.setVisibility(View.VISIBLE);
+                grid_category.setVisibility(View.GONE);
+                list_subcat.setVisibility(View.GONE);
+                autoText_location.setVisibility(View.GONE);
                 editText_description.setVisibility(View.VISIBLE);
                 button_send.setVisibility(View.VISIBLE);
-                text_subcategory_selected.setText(param);
                 break;
             default:
                 break;
         }
-        step_new_quotation++;
     }
 
 }
