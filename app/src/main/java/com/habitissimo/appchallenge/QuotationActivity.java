@@ -1,21 +1,18 @@
 package com.habitissimo.appchallenge;
 
-
-import android.annotation.SuppressLint;
-import android.os.Bundle;
-
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -33,13 +30,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+public class QuotationActivity extends AppCompatActivity implements DialogBottomSheetOptions.BottomSheetOptionsListener {
 
-public class FragmentQuotationRequests extends Fragment {
-
-
-    public FragmentQuotationRequests() {
-        // Required empty public constructor
-    }
 
     private RecyclerView recView_quotation;
     private ArrayList<Quotation> quotations;
@@ -67,30 +59,32 @@ public class FragmentQuotationRequests extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_quotation_requests, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_quotation);
 
-        recView_quotation = (RecyclerView) view.findViewById(R.id.rec_view_quotation);
-        fab_add_quotation = (FloatingActionButton) view.findViewById(R.id.fab_add);
-        layout_bottom_sheet = (LinearLayout) view.findViewById(R.id.layout_bottom_sheet);
-        View bottomSheet = view.findViewById(R.id.bottom_sheet_add_quotation);
+        setTitle(getString(R.string.quotation_requests));
+
+        recView_quotation = (RecyclerView) findViewById(R.id.rec_view_quotation);
+        fab_add_quotation = (FloatingActionButton) findViewById(R.id.fab_add);
+        layout_bottom_sheet = (LinearLayout) findViewById(R.id.layout_bottom_sheet);
+        View bottomSheet = findViewById(R.id.bottom_sheet_add_quotation);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
 
-        grid_category = (GridLayout) view.findViewById(R.id.grid_category);
-        list_subcat = (ListView) view.findViewById(R.id.list_subcategory);
+        grid_category = (GridLayout) findViewById(R.id.grid_category);
+        list_subcat = (ListView) findViewById(R.id.list_subcategory);
 
-        image_back = (ImageView) view.findViewById(R.id.image_back);
-        text_select_category = (TextView) view.findViewById(R.id.text_select_category);
-        text_select_subcategory = (TextView) view.findViewById(R.id.text_select_subcategory);
-        text_category_selected = (TextView) view.findViewById(R.id.text_category_selected);
-        text_subcategory_selected = (TextView) view.findViewById(R.id.text_subcategory_selected);
-        text_put_description = (TextView) view.findViewById(R.id.text_put_description);
-        text_put_location = (TextView) view.findViewById(R.id.text_put_location);
-        text_location_done = (TextView) view.findViewById(R.id.text_location_done);
-        editText_description = (EditText) view.findViewById(R.id.edittext_description);
-        autoText_location = (AutoCompleteTextView) view.findViewById(R.id.autotext_location);
-        button_send = (Button) view.findViewById(R.id.button_send);
+        image_back = (ImageView) findViewById(R.id.image_back);
+        text_select_category = (TextView) findViewById(R.id.text_select_category);
+        text_select_subcategory = (TextView) findViewById(R.id.text_select_subcategory);
+        text_category_selected = (TextView) findViewById(R.id.text_category_selected);
+        text_subcategory_selected = (TextView) findViewById(R.id.text_subcategory_selected);
+        text_put_description = (TextView) findViewById(R.id.text_put_description);
+        text_put_location = (TextView) findViewById(R.id.text_put_location);
+        text_location_done = (TextView) findViewById(R.id.text_location_done);
+        editText_description = (EditText) findViewById(R.id.edittext_description);
+        autoText_location = (AutoCompleteTextView) findViewById(R.id.autotext_location);
+        button_send = (Button) findViewById(R.id.button_send);
 
         // Category images
         ArrayList<Integer> cat_images = new ArrayList<>();
@@ -116,7 +110,7 @@ public class FragmentQuotationRequests extends Fragment {
 
         // Inflate GridLayout with Category items
         for(int i=0; i<cat_images.size(); i++){
-            final View category = inflater.inflate(R.layout.item_category, grid_category, false);
+            final View category = getLayoutInflater().inflate(R.layout.item_category, grid_category, false);
             category.setId(View.generateViewId());
             ImageView cat_image = (ImageView) category.findViewById(R.id.image_category);
             cat_image.setImageResource(cat_images.get(i));
@@ -136,12 +130,12 @@ public class FragmentQuotationRequests extends Fragment {
 
         // Populate ListView with Subcategories
         final String[] subcats = new String[]{"Pintores","Tapiceros","Cerrajeros"};
-        list_subcat.setAdapter(new ArrayAdapter<String>(getContext(),
+        list_subcat.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
 
         // Populate AutoCompleteTextView with Locations
         final String[] locations = new String[]{ "Palma de Mallorca, 07013", "Barcelona, 08112", "Madrid, 28451", "Murcia, 30110"};
-        autoText_location.setAdapter(new ArrayAdapter<String>(getContext(),
+        autoText_location.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
                 android.R.layout.simple_dropdown_item_1line, locations));
         autoText_location.setThreshold(1);
 
@@ -206,14 +200,14 @@ public class FragmentQuotationRequests extends Fragment {
                 Bundle args = new Bundle();
                 args.putSerializable("position", recView_quotation.getChildAdapterPosition(v));
                 bottomSheetOptions.setArguments(args);
-                bottomSheetOptions.show(getFragmentManager(), "dialog_bottom_sheet_options");
+                bottomSheetOptions.show(getSupportFragmentManager(), "dialog_bottom_sheet_options");
             }
         });
 
         // Populate RecyclerView Quotations
         recView_quotation.setHasFixedSize(false);
         recView_quotation.setAdapter(quotationAdapter);
-        recView_quotation.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
+        recView_quotation.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
 
         // Floating Action Button add new quotation clicked
         fab_add_quotation.setOnClickListener(new View.OnClickListener() {
@@ -247,7 +241,7 @@ public class FragmentQuotationRequests extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if(charSequence.length() == 500){
-                    Toast.makeText(getContext(), getString(R.string.max_edittext), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.max_edittext), Toast.LENGTH_LONG).show();
                 }
             }
             @Override
@@ -266,16 +260,27 @@ public class FragmentQuotationRequests extends Fragment {
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Send clicked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Send clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
-        return view;
+    }
+
+    @Override
+    public void onOptionMethodClicked(int position, String option) {
+
+        if (option.equals(getString(R.string.NT_options_share))) {
+            Toast.makeText(getApplicationContext(), "Share clicked " + position, Toast.LENGTH_SHORT).show();
+        } else if (option.equals(getString(R.string.NT_options_edit))) {
+            Toast.makeText(getApplicationContext(), "Edit clicked " + position, Toast.LENGTH_SHORT).show();
+        } else if (option.equals(getString(R.string.NT_options_delete))) {
+            Toast.makeText(getApplicationContext(), "Remove clicked " + position, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void openContactDialog(Contact contact){
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag("dialog_contact");
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog_contact");
         if (prev != null) {
             ft.remove(prev);
         }

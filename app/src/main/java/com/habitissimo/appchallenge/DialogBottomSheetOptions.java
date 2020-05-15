@@ -33,7 +33,7 @@ public class DialogBottomSheetOptions extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.bottom_sheet_options, container, false);
+        View v = inflater.inflate(R.layout.dialog_bottom_sheet_options, container, false);
 
         // Find Bottom Sheet views
         LinearLayout option_share = v.findViewById(R.id.layout_option_share);
