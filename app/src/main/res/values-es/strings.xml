@@ -1,0 +1,38 @@
+<resources>
+    <string name="contact">Contacto</string>
+    <string name="contact_details">Datos de Contacto</string>
+    <string name="contact_copy">Nombre: %1$s\nTeléfono: %2$s\nEmail: %3$s\nUbicación: %4$s</string>
+    <string name="contact_copied">Datos de Contacto copiados al portapapeles</string>
+
+    <string name="quotation_requests">Mis Solicitudes de Presupuesto</string>
+    <string name="new_quotation">Pedir presupuesto</string>
+    <string name="select_category">¿Qué necesitas?</string>
+    <string name="select_subcategory">Elige el servicio:</string>
+    <string name="put_description">Describe el trabajo a realizar:</string>
+    <string name="put_location">Localización donde buscar profesionales:</string>
+    <string name="put_contact">Los profesionales se pondrán en contacto con:</string>
+    <string name="hint_description">Desearía&#8230;</string>
+    <string name="hint_location">Municipio o CP</string>
+    <string name="max_edittext">Máxima longitud 500 carácteres</string>
+    <string name="send">Enviar</string>
+    <string name="next">Continuar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="name">Nombre</string>
+    <string name="phone">Teléfono</string>
+    <string name="email">Email</string>
+
+    <string name="options_title">¿Qué deseas hacer con este presupuesto?</string>
+    <string name="options_share">Compartir</string>
+    <string name="options_edit">Editar</string>
+    <string name="options_delete">Eliminar</string>
+
+    <string name="cat_construccion">Construcción</string>
+    <string name="cat_reformas">Reformas</string>
+    <string name="cat_mudanzas">Mudanzas</string>
+    <string name="cat_tecnicos">Técnicos</string>
+    <string name="cat_obras_menores">Obras Menores</string>
+    <string name="cat_instaladores">Instaladores</string>
+    <string name="cat_mantenimiento">Mantenimiento</string>
+    <string name="cat_tiendas">Tiendas</string>
+
+</resources>
