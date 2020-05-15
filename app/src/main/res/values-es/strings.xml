@@ -10,10 +10,16 @@
     <string name="select_subcategory">Elige el servicio:</string>
     <string name="put_description">Describe el trabajo a realizar:</string>
     <string name="put_location">Localización donde buscar profesionales:</string>
+    <string name="put_contact">Los profesionales se pondrán en contacto con:</string>
     <string name="hint_description">Desearía&#8230;</string>
     <string name="hint_location">Municipio o CP</string>
     <string name="max_edittext">Máxima longitud 500 carácteres</string>
     <string name="send">Enviar</string>
+    <string name="next">Continuar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="name">Nombre</string>
+    <string name="phone">Teléfono</string>
+    <string name="email">Email</string>
 
     <string name="options_title">¿Qué deseas hacer con este presupuesto?</string>
     <string name="options_share">Compartir</string>

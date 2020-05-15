@@ -49,13 +49,22 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     private TextView text_category_selected;
     private TextView text_subcategory_selected;
     private TextView text_put_description;
+    private TextView text_description_done;
     private TextView text_put_location;
     private TextView text_location_done;
+    private TextView text_put_contact;
+    private TextView text_name;
+    private TextView text_phone;
+    private TextView text_email;
+    private TextView text_location;
+
     private EditText editText_description;
     private AutoCompleteTextView autoText_location;
+    private LinearLayout layout_contact;
     private Button button_send;
 
     int step_add_quotation = 0;
+    final int LAST_STEP_ADD_QUOTATION = 4;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -80,10 +89,18 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         text_category_selected = (TextView) findViewById(R.id.text_category_selected);
         text_subcategory_selected = (TextView) findViewById(R.id.text_subcategory_selected);
         text_put_description = (TextView) findViewById(R.id.text_put_description);
+        text_description_done = (TextView) findViewById(R.id.text_description_done);
         text_put_location = (TextView) findViewById(R.id.text_put_location);
         text_location_done = (TextView) findViewById(R.id.text_location_done);
+        text_put_contact = (TextView) findViewById(R.id.text_put_contact);
+        text_name = (TextView) findViewById(R.id.text_name);
+        text_phone = (TextView) findViewById(R.id.text_phone);
+        text_email = (TextView) findViewById(R.id.text_email);
+        text_location = (TextView) findViewById(R.id.text_location);
+
         editText_description = (EditText) findViewById(R.id.edittext_description);
         autoText_location = (AutoCompleteTextView) findViewById(R.id.autotext_location);
+        layout_contact = (LinearLayout) findViewById(R.id.layout_contact);
         button_send = (Button) findViewById(R.id.button_send);
 
         // Category images
@@ -225,7 +242,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
             }
         });
 
-        // Step back inside New Quotation
+        // Step back inside Add Quotation
         image_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -249,6 +266,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
 
         });
 
+        // Location selected
         autoText_location.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -260,7 +278,14 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Send clicked", Toast.LENGTH_SHORT).show();
+                if(step_add_quotation == LAST_STEP_ADD_QUOTATION){
+                    reset_add_quotation();
+                    Contact contact = new Contact(text_name.getText().toString(), text_phone.getText().toString(), text_email.getText().toString(), text_location.getText().toString());
+                    quotations.add(new Quotation(categoryText2Image(text_category_selected.getText().toString()), text_subcategory_selected.getText().toString(), text_description_done.getText().toString(), contact));
+                    quotationAdapter.notifyDataSetChanged();
+                }else{
+                    openFillContactDialog();
+                }
             }
         });
 
@@ -278,6 +303,18 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        // Close app if Bottom Sheet is not Expanded
+        if(step_add_quotation == 0 && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }else if(step_add_quotation > 0 && bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+            go_back_add_quotation();
+        }else{
+            super.onBackPressed();
+        }
+    }
+
     private void openContactDialog(Contact contact){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog_contact");
@@ -289,6 +326,27 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         // Create and show the dialog.
         DialogFragment newFragment = new DialogContact(contact);
         newFragment.show(ft, "dialog_contact");
+    }
+
+    private void openFillContactDialog(){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog_fill_contact");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = new DialogFillContact();
+        newFragment.show(ft, "dialog_fill_contact");
+    }
+
+    public void setFillContact(String name, String phone, String email){
+        text_name.setText(name);
+        text_phone.setText(phone);
+        text_email.setText(email);
+        text_location.setText(text_location_done.getText());
+        go_forward_add_quotation(editText_description.getText().toString());
     }
 
     private void go_back_add_quotation(){
@@ -310,9 +368,20 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
             case 3:
                 text_location_done.setText(param);
                 break;
+            case 4:
+                text_description_done.setText(param);
+                break;
             default:
                 break;
         }
+    }
+
+    private void reset_add_quotation(){
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        step_add_quotation = 0;
+        autoText_location.getText().clear();
+        editText_description.getText().clear();
+        update_add_quotation();
     }
 
     private void update_add_quotation(){
@@ -323,12 +392,15 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 text_select_subcategory.setVisibility(View.GONE);
                 text_subcategory_selected.setVisibility(View.GONE);
                 text_put_description.setVisibility(View.GONE);
+                text_description_done.setVisibility(View.GONE);
                 text_put_location.setVisibility(View.GONE);
                 text_location_done.setVisibility(View.GONE);
+                text_put_contact.setVisibility(View.GONE);
                 grid_category.setVisibility(View.VISIBLE);
                 list_subcat.setVisibility(View.GONE);
                 autoText_location.setVisibility(View.GONE);
                 editText_description.setVisibility(View.GONE);
+                layout_contact.setVisibility(View.GONE);
                 button_send.setVisibility(View.GONE);
                 break;
             case 1:
@@ -337,12 +409,15 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 text_select_subcategory.setVisibility(View.VISIBLE);
                 text_subcategory_selected.setVisibility(View.GONE);
                 text_put_description.setVisibility(View.GONE);
+                text_description_done.setVisibility(View.GONE);
                 text_put_location.setVisibility(View.GONE);
                 text_location_done.setVisibility(View.GONE);
+                text_put_contact.setVisibility(View.GONE);
                 grid_category.setVisibility(View.GONE);
                 list_subcat.setVisibility(View.VISIBLE);
                 autoText_location.setVisibility(View.GONE);
                 editText_description.setVisibility(View.GONE);
+                layout_contact.setVisibility(View.GONE);
                 button_send.setVisibility(View.GONE);
                 break;
             case 2:
@@ -351,12 +426,15 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 text_select_subcategory.setVisibility(View.VISIBLE);
                 text_subcategory_selected.setVisibility(View.VISIBLE);
                 text_put_description.setVisibility(View.GONE);
+                text_description_done.setVisibility(View.GONE);
                 text_put_location.setVisibility(View.VISIBLE);
                 text_location_done.setVisibility(View.GONE);
+                text_put_contact.setVisibility(View.GONE);
                 grid_category.setVisibility(View.GONE);
                 list_subcat.setVisibility(View.GONE);
                 autoText_location.setVisibility(View.VISIBLE);
                 editText_description.setVisibility(View.GONE);
+                layout_contact.setVisibility(View.GONE);
                 button_send.setVisibility(View.GONE);
                 break;
             case 3:
@@ -365,17 +443,60 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 text_select_subcategory.setVisibility(View.VISIBLE);
                 text_subcategory_selected.setVisibility(View.VISIBLE);
                 text_put_description.setVisibility(View.VISIBLE);
+                text_description_done.setVisibility(View.GONE);
                 text_put_location.setVisibility(View.VISIBLE);
                 text_location_done.setVisibility(View.VISIBLE);
+                text_put_contact.setVisibility(View.GONE);
                 grid_category.setVisibility(View.GONE);
                 list_subcat.setVisibility(View.GONE);
                 autoText_location.setVisibility(View.GONE);
                 editText_description.setVisibility(View.VISIBLE);
+                layout_contact.setVisibility(View.GONE);
                 button_send.setVisibility(View.VISIBLE);
+                button_send.setText(R.string.next);
+                break;
+            case 4:
+                image_back.setVisibility(View.VISIBLE);
+                text_category_selected.setVisibility(View.VISIBLE);
+                text_select_subcategory.setVisibility(View.VISIBLE);
+                text_subcategory_selected.setVisibility(View.VISIBLE);
+                text_put_description.setVisibility(View.VISIBLE);
+                text_description_done.setVisibility(View.VISIBLE);
+                text_put_location.setVisibility(View.GONE);
+                text_location_done.setVisibility(View.GONE);
+                text_put_contact.setVisibility(View.VISIBLE);
+                grid_category.setVisibility(View.GONE);
+                list_subcat.setVisibility(View.GONE);
+                autoText_location.setVisibility(View.GONE);
+                editText_description.setVisibility(View.GONE);
+                layout_contact.setVisibility(View.VISIBLE);
+                button_send.setVisibility(View.VISIBLE);
+                button_send.setText(R.string.send);
                 break;
             default:
                 break;
         }
     }
 
+    private int categoryText2Image(String text) {
+        int image = 0;
+        if (text.equals(getString(R.string.cat_construccion))) {
+            image = R.drawable.cat_construccion;
+        } else if (text.equals(getString(R.string.cat_reformas))) {
+            image = R.drawable.cat_reformas;
+        } else if (text.equals(getString(R.string.cat_mudanzas))) {
+            image = R.drawable.cat_mudanzas;
+        } else if (text.equals(getString(R.string.cat_tecnicos))) {
+            image = R.drawable.cat_tecnicos;
+        } else if (text.equals(getString(R.string.cat_obras_menores))) {
+            image = R.drawable.cat_obras_menores;
+        } else if (text.equals(getString(R.string.cat_instaladores))) {
+            image = R.drawable.cat_instaladores;
+        } else if (text.equals(getString(R.string.cat_mantenimiento))) {
+            image = R.drawable.cat_mantenimiento;
+        } else if (text.equals(getString(R.string.cat_tiendas))) {
+            image = R.drawable.cat_tiendas;
+        }
+        return image;
+    }
 }
