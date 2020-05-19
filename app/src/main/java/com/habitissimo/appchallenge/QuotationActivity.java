@@ -73,7 +73,9 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     // Declare variables
     int step_add_quotation = 0;
     final int LAST_STEP_ADD_QUOTATION = 4;
+    HabitissimoAPI habitissimoAPI;
     final String TAG_API = "HabitissimoAPI";
+    List<String> subcats = new ArrayList<>();
 
     @SuppressLint("ClickableViewAccessibility") // Supress Warning ListView setOnTouchListener
     @Override
@@ -118,15 +120,10 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 .baseUrl("https://api.habitissimo.es/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        HabitissimoAPI habitissimoAPI = retrofit.create(HabitissimoAPI.class);
+        habitissimoAPI = retrofit.create(HabitissimoAPI.class);
 
         // Read from REST API the Category items
-        habitissimoAPICallCategories(habitissimoAPI);
-
-        // Populate ListView with Subcategories
-        final String[] subcats = new String[]{"Pintores","Tapiceros","Cerrajeros"};
-        list_subcat.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
+        habitissimoAPICallCategories();
 
         // Populate AutoCompleteTextView with Locations
         final String[] locations = new String[]{ "Palma de Mallorca, 07013", "Barcelona, 08112", "Madrid, 28451", "Murcia, 30110"};
@@ -160,7 +157,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         // Subcategory Item selected
         list_subcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                go_forward_add_quotation(subcats[position]);
+                go_forward_add_quotation(subcats.get(position));
             }
         });
 
@@ -293,7 +290,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         }
     }
 
-    private void habitissimoAPICallCategories(HabitissimoAPI habitissimoAPI){
+    private void habitissimoAPICallCategories(){
         Call<List<Category>> call = habitissimoAPI.getCategories();
         call.enqueue(new Callback<List<Category>>() {
             @Override
@@ -309,10 +306,10 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 for (Category category : categories) {
 
                     // Print JSON Object
-                    Log.d(TAG_API, "Category ID: " + category.getId() + ", name: " + category.getName());
+                    Log.d(TAG_API, "Category ID: " + category.getId() + ", name: " + category.getResName());
 
                     // Build category resource name to find image and text resources
-                    String res_name = "cat_" + category.getName().replace("-","_");
+                    String res_name = "cat_" + category.getResName().replace("-","_");
                     int image_id = getResources().getIdentifier(res_name, "drawable", getPackageName());
                     int text_id = getResources().getIdentifier(res_name, "string", getPackageName());
 
@@ -337,13 +334,50 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                         view_category.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                go_forward_add_quotation(selected_category);
+                                // Populate ListView with Subcategories
+                                habitissimoAPICallSubCategories(category);
                             }
                         });
                     }else{
                         Log.e(TAG_API, "Category resource name '" + res_name + "' not found");
                     }
                 }
+            }
+            @Override
+            public void onFailure(Call<List<Category>> call, Throwable t) {
+                // Any Retrofit kind of failure
+                Log.e(TAG_API, t.getMessage());
+            }
+        });
+    }
+
+    private void habitissimoAPICallSubCategories(Category category){
+        Call<List<Category>> call = habitissimoAPI.getSubcategories(category.getId());
+        call.enqueue(new Callback<List<Category>>() {
+            @Override
+            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                // Response not successful
+                if (!response.isSuccessful()) {
+                    Log.e(TAG_API, "Response Code: " + response.code());
+                    return;
+                }
+
+                subcats.clear();
+
+                // Response is successful
+                List<Category> subcategories = response.body();
+                for (Category subcategory : subcategories) {
+
+                    // Print JSON Object
+                    Log.d(TAG_API, "Subcategory ID: " + subcategory.getId() + ", name: " + subcategory.getResName());
+
+                    subcats.add(subcategory.getName());
+                }
+
+                // Populate ListView with Subcategories
+                list_subcat.setAdapter(new ArrayAdapter<>(getApplicationContext(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
+                go_forward_add_quotation(category.getName());
             }
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {

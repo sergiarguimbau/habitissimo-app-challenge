@@ -6,8 +6,10 @@ public class Category {
 
     private String id;
 
-    @SerializedName("normalized_name")
     private String name;
+
+    @SerializedName("normalized_name")
+    private String res_name;
 
     public String getId() {
         return id;
@@ -15,5 +17,9 @@ public class Category {
 
     public String getName() {
         return name;
+    }
+
+    public String getResName() {
+        return res_name;
     }
 }
