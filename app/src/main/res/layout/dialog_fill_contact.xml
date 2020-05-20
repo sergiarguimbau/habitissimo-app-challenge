@@ -30,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
+                android:maxLength="50"
                 android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -61,6 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/phone"
+                android:maxLength="50"
                 android:inputType="phone" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -92,6 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
+                android:maxLength="50"
                 android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>

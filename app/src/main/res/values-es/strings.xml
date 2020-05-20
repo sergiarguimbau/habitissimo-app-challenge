@@ -3,6 +3,8 @@
     <string name="contact_details">Datos de Contacto</string>
     <string name="contact_copy">Nombre: %1$s\nTeléfono: %2$s\nEmail: %3$s\nUbicación: %4$s</string>
     <string name="contact_copied">Datos de Contacto copiados al portapapeles</string>
+    <string name="contact_validate">Los datos de contacto no son válidos</string>
+
 
     <string name="quotation_requests">Mis Solicitudes de Presupuesto</string>
     <string name="new_quotation">Pedir presupuesto</string>
@@ -10,7 +12,7 @@
     <string name="select_subcategory">Elige el servicio:</string>
     <string name="put_description">Describe el trabajo a realizar:</string>
     <string name="put_location">Localización donde buscar profesionales:</string>
-    <string name="put_contact">Los profesionales se pondrán en contacto con:</string>
+    <string name="put_contact">Los profesionales contactarán ocn:</string>
     <string name="hint_description">Desearía&#8230;</string>
     <string name="hint_location">Municipio o CP</string>
     <string name="max_edittext">Máxima longitud 500 carácteres</string>
