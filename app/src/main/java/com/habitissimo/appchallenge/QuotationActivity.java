@@ -125,11 +125,8 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         // Read from REST API the Category items
         habitissimoAPICallCategories();
 
-        // Populate AutoCompleteTextView with Locations
-        final String[] locations = new String[]{ "Palma de Mallorca, 07013", "Barcelona, 08112", "Madrid, 28451", "Murcia, 30110"};
-        autoText_location.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
-                android.R.layout.simple_dropdown_item_1line, locations));
-        autoText_location.setThreshold(1);
+        // Read from REST API the Locations
+        habitissimoAPICallLocations();
 
         // Modify scroll events to prevent Bottom Sheet from NestedScrollView to collapse
         list_subcat.setOnTouchListener(new ListView.OnTouchListener() {
@@ -381,6 +378,42 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
             }
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
+                // Any Retrofit kind of failure
+                Log.e(TAG_API, t.getMessage());
+            }
+        });
+    }
+
+    private void habitissimoAPICallLocations(){
+        Call<List<Location>> call = habitissimoAPI.getLocations();
+        call.enqueue(new Callback<List<Location>>() {
+            @Override
+            public void onResponse(Call<List<Location>> call, Response<List<Location>> response) {
+                // Response not successful
+                if (!response.isSuccessful()) {
+                    Log.e(TAG_API, "Response Code: " + response.code());
+                    return;
+                }
+
+                List<String> location_list = new ArrayList<>();
+
+                // Response is successful
+                List<Location> locations = response.body();
+                for (Location location : locations) {
+
+                    // Print JSON Object
+                    Log.d(TAG_API, "Location ID: " + location.getId() + ", name: " + location.getName() + ", zip: " + location.getZip());
+
+                    location_list.add(location.getName().concat(", ").concat(location.getZip()));
+                }
+
+                // Populate AutoCompleteTextView with Locations
+                autoText_location.setAdapter(new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_dropdown_item_1line, location_list));
+                autoText_location.setThreshold(1);
+            }
+            @Override
+            public void onFailure(Call<List<Location>> call, Throwable t) {
                 // Any Retrofit kind of failure
                 Log.e(TAG_API, t.getMessage());
             }

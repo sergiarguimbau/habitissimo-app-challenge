@@ -13,4 +13,7 @@ public interface HabitissimoAPI {
 
     @GET("category/list/{id}")
     Call<List<Category>> getSubcategories(@Path("id") String id);
+
+    @GET("location/list")
+    Call<List<Location>> getLocations();
 }
