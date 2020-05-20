@@ -2,7 +2,9 @@ package com.habitissimo.appchallenge;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -44,6 +46,16 @@ public class DialogFillContact extends DialogFragment {
         inputLayout_name = (TextInputLayout) view.findViewById(R.id.inputlayout_name);
         inputLayout_phone = (TextInputLayout) view.findViewById(R.id.inputlayout_phone);
         inputLayout_email = (TextInputLayout) view.findViewById(R.id.inputlayout_email);
+
+        // Read local SharedPreferences to get previously written name, phone and email
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String name = sharedPreferences.getString(getString(R.string.key_name), "");
+        String phone = sharedPreferences.getString(getString(R.string.key_phone), "");
+        String email = sharedPreferences.getString(getString(R.string.key_email), "");
+
+        if(!name.isEmpty()) editText_name.setText(name);
+        if(!phone.isEmpty()) editText_phone.setText(phone);
+        if(!email.isEmpty()) editText_email.setText(email);
 
         // Update Text Input Layout error state for: name, phone, email
         editText_name.addTextChangedListener(new TextWatcher() {
@@ -129,7 +141,17 @@ public class DialogFillContact extends DialogFragment {
                         inputLayout_email.setError(valid_email ? null : " ");
 
                         if (valid_name && valid_phone && valid_email) {
+
+                            // Call Activity to go to next step in add quotation
                             ((QuotationActivity)getActivity()).setFillContact(name, phone, email);
+
+                            // Save name, phone, email to local SharedPreferences
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString(getString(R.string.key_name),name);
+                            editor.putString(getString(R.string.key_phone),phone);
+                            editor.putString(getString(R.string.key_email),email);
+                            editor.apply();
+
                             dialog.dismiss();
                         }else{
                             Toast.makeText(getContext(), getString(R.string.contact_validate), Toast.LENGTH_SHORT).show();

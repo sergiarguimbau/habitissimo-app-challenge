@@ -38,10 +38,13 @@
     <string name="cat_mantenimiento">Maintenance</string>
     <string name="cat_tiendas">Stores</string>
 
-
     <string name="NT_options_share" translatable="false">quotation_share</string>
     <string name="NT_options_edit" translatable="false">quotation_edit</string>
     <string name="NT_options_delete" translatable="false">quotation_delete</string>
+
+    <string name="key_name" translatable="false">key_name</string>
+    <string name="key_phone" translatable="false">key_phone</string>
+    <string name="key_email" translatable="false">key_email</string>
 
 
 </resources>
