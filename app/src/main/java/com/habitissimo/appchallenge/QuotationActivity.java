@@ -76,6 +76,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     HabitissimoAPI habitissimoAPI;
     final String TAG_API = "HabitissimoAPI";
     List<String> subcats = new ArrayList<>();
+    QuotationAdapter quotationAdapter;
 
     @SuppressLint("ClickableViewAccessibility") // Supress Warning ListView setOnTouchListener
     @Override
@@ -174,7 +175,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         quotations.add(new Quotation(R.drawable.cat_obras_menores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
 
         // Button Contact from RecyclerView Item selected
-        final QuotationAdapter quotationAdapter = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
+        quotationAdapter = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
             @Override
             public void onPositionClicked(int position) {
                 openContactDialog(quotations.get(position).contact);
@@ -271,7 +272,15 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         } else if (option.equals(getString(R.string.NT_options_edit))) {
             Toast.makeText(getApplicationContext(), "Edit clicked " + position, Toast.LENGTH_SHORT).show();
         } else if (option.equals(getString(R.string.NT_options_delete))) {
-            Toast.makeText(getApplicationContext(), "Remove clicked " + position, Toast.LENGTH_SHORT).show();
+            // Remove item
+            quotations.remove(position);
+            if(position == 0){
+                // Workaround for RecyclerView bug due to first item deletion
+                quotationAdapter.notifyDataSetChanged();
+            }else{
+                // Enjoy default animation for any other item removed
+                quotationAdapter.notifyItemRemoved(position);
+            }
         }
     }
 
