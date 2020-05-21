@@ -5,10 +5,10 @@ import android.content.Context;
 public class Quotation {
 
     //Fields
-    Category category;
-    Category subcategory;
-    String description;
-    Contact contact;
+    private Category category;
+    private Category subcategory;
+    private String description;
+    private Contact contact;
 
     //Constructors
     public Quotation(Category category, Category subcategory, String description, Contact contact)
@@ -16,6 +16,38 @@ public class Quotation {
         this.category = category;
         this.subcategory = subcategory;
         this.description = description;
+        this.contact = contact;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public Category getSubcategory() {
+        return subcategory;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setSubcategory(Category subcategory) {
+        this.subcategory = subcategory;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setContact(Contact contact) {
         this.contact = contact;
     }
 

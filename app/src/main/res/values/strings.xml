@@ -8,7 +8,8 @@
     <string name="contact_validate">Contact Details are invalid</string>
 
     <string name="quotation_requests">My Quotation Requests</string>
-    <string name="new_quotation">Ask for Quotation</string>
+    <string name="add_quotation">Ask for Quotation</string>
+    <string name="edit_quotation">Edit Quotation</string>
     <string name="select_category">What do you need?</string>
     <string name="select_subcategory">Select a service:</string>
     <string name="put_description">Describe the work to do:</string>
@@ -21,6 +22,7 @@
     <string name="send">Send</string>
     <string name="next">Continue</string>
     <string name="confirm">Confirm</string>
+    <string name="save">Save</string>
     <string name="name">Name</string>
     <string name="phone">Phone</string>
     <string name="email">Email</string>

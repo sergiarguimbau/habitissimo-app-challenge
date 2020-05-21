@@ -6,7 +6,8 @@
     <string name="contact_validate">Los datos de contacto no son válidos</string>
 
     <string name="quotation_requests">Mis Solicitudes de Presupuesto</string>
-    <string name="new_quotation">Pedir presupuesto</string>
+    <string name="add_quotation">Pedir presupuesto</string>
+    <string name="edit_quotation">Editar presupuesto</string>
     <string name="select_category">¿Qué necesitas?</string>
     <string name="select_subcategory">Elige el servicio:</string>
     <string name="put_description">Describe el trabajo a realizar:</string>
@@ -19,6 +20,7 @@
     <string name="send">Enviar</string>
     <string name="next">Continuar</string>
     <string name="confirm">Confirmar</string>
+    <string name="save">Guardar</string>
     <string name="name">Nombre</string>
     <string name="phone">Teléfono</string>
     <string name="email">Email</string>

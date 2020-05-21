@@ -50,13 +50,13 @@ public class QuotationAdapter
 
         public void bindAchievement(Quotation quot) {
             // Set Texts/Images to Quotation item
-            image_category.setImageResource(quot.category.getImage());
-            if(quot.subcategory != null) text_subcategory.setText(quot.subcategory.getName());
-            if(quot.description == null || quot.description.isEmpty()){
+            image_category.setImageResource(quot.getCategory().getImage());
+            if(quot.getSubcategory() != null) text_subcategory.setText(quot.getSubcategory().getName());
+            if(quot.getDescription() == null || quot.getDescription().isEmpty()){
                 text_description.setVisibility(View.GONE);
             }else{
                 text_description.setVisibility(View.VISIBLE);
-                text_description.setText(quot.description);
+                text_description.setText(quot.getDescription());
             }
         }
 
