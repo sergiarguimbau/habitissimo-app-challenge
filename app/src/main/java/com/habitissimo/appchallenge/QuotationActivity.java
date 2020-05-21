@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -75,7 +76,10 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     final int LAST_STEP_ADD_QUOTATION = 4;
     HabitissimoAPI habitissimoAPI;
     final String TAG_API = "HabitissimoAPI";
-    List<String> subcats = new ArrayList<>();
+    List<Category> categories = new ArrayList<>();
+    List<Category> subcategories = new ArrayList<>();
+    Category category_selected;
+    Category subcategory_selected;
     QuotationAdapter quotationAdapter;
 
     @SuppressLint("ClickableViewAccessibility") // Supress Warning ListView setOnTouchListener
@@ -155,29 +159,19 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         // Subcategory Item selected
         list_subcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                go_forward_add_quotation(subcats.get(position));
+                subcategory_selected = subcategories.get(position);
+                go_forward_add_quotation(subcategory_selected.getName());
             }
         });
 
-        // Create contact examples
-        final Contact contact_antonio = new Contact("Antonio Llinares", "626 42 39 01", "antonito@email.com", "Palma de Mallorca, 07013");
-        Contact contact_maria = new Contact("María Salvado", "692 39 29 10", "maria@email.com", "Murcia, 30110");
 
         // Create quotation examples
         quotations = new ArrayList<Quotation>();
-        quotations.add(new Quotation(R.drawable.cat_construccion, "Construir muro", "Desearía construir un muro en el patio de mi casa", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_reformas,"Reparación tubería", "Quiero reparar el baño que el cuaarto piso tiene goteras. Necesito ayuda urgente", contact_maria));
-        quotations.add(new Quotation(R.drawable.cat_mudanzas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_mantenimiento,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
-        quotations.add(new Quotation(R.drawable.cat_tecnicos,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
-        quotations.add(new Quotation(R.drawable.cat_tiendas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_instaladores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_obras_menores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
 
         // Button Contact from RecyclerView Item selected
         quotationAdapter = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
             @Override
-            public void onPositionClicked(int position) {
+            public void onContactClicked(int position) {
                 openContactDialog(quotations.get(position).contact);
             }
         });
@@ -195,7 +189,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         });
 
         // Populate RecyclerView Quotations
-        recView_quotation.setHasFixedSize(false);
+        recView_quotation.setHasFixedSize(true);
         recView_quotation.setAdapter(quotationAdapter);
         recView_quotation.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
 
@@ -254,7 +248,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 if(step_add_quotation == LAST_STEP_ADD_QUOTATION){
                     reset_add_quotation();
                     Contact contact = new Contact(text_name.getText().toString(), text_phone.getText().toString(), text_email.getText().toString(), text_location.getText().toString());
-                    quotations.add(new Quotation(categoryText2Image(text_category_selected.getText().toString()), text_subcategory_selected.getText().toString(), text_description_done.getText().toString(), contact));
+                    quotations.add(new Quotation(category_selected, subcategory_selected, text_description_done.getText().toString(), contact));
                     quotationAdapter.notifyDataSetChanged();
                 }else{
                     openFillContactDialog();
@@ -268,19 +262,19 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     public void onOptionMethodClicked(int position, String option) {
 
         if (option.equals(getString(R.string.NT_options_share))) {
-            Toast.makeText(getApplicationContext(), "Share clicked " + position, Toast.LENGTH_SHORT).show();
+            // Share quotation as plain text
+            String share_message = quotations.get(position).printQuotation(getApplicationContext());
+            Intent share = new Intent(android.content.Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, share_message);
+            startActivity(Intent.createChooser(share, getString(R.string.share_quotation)));
+
         } else if (option.equals(getString(R.string.NT_options_edit))) {
             Toast.makeText(getApplicationContext(), "Edit clicked " + position, Toast.LENGTH_SHORT).show();
         } else if (option.equals(getString(R.string.NT_options_delete))) {
-            // Remove item
+            // Remove quotation item (without animations)
             quotations.remove(position);
-            if(position == 0){
-                // Workaround for RecyclerView bug due to first item deletion
-                quotationAdapter.notifyDataSetChanged();
-            }else{
-                // Enjoy default animation for any other item removed
-                quotationAdapter.notifyItemRemoved(position);
-            }
+            quotationAdapter.notifyDataSetChanged();
         }
     }
 
@@ -308,7 +302,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 }
 
                 // Response is successful
-                List<Category> categories = response.body();
+                categories = response.body();
                 for (Category category : categories) {
 
                     // Print JSON Object
@@ -317,10 +311,11 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                     // Build category resource name to find image and text resources
                     String res_name = "cat_" + category.getResName().replace("-","_");
                     int image_id = getResources().getIdentifier(res_name, "drawable", getPackageName());
-                    int text_id = getResources().getIdentifier(res_name, "string", getPackageName());
 
                     // Validate resource IDs
-                    if(image_id != 0 && text_id != 0){
+                    if(image_id != 0){
+
+                        category.setImage(image_id);
 
                         // Create new item category
                         final View view_category = getLayoutInflater().inflate(R.layout.item_category, grid_category, false);
@@ -328,20 +323,20 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
 
                         // Set Text and Image (validated resource IDs)
                         ImageView cat_image = (ImageView) view_category.findViewById(R.id.image_category);
-                        cat_image.setImageResource(image_id);
+                        cat_image.setImageResource(category.getImage());
                         TextView cat_text = (TextView) view_category.findViewById(R.id.text_category);
-                        cat_text.setText(text_id);
+                        cat_text.setText(category.getName());
 
                         // Add View to parent Grid Layout
                         grid_category.addView(view_category);
-                        final String selected_category = getString(text_id);
 
                         // Category Item selected
                         view_category.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 // Populate ListView with Subcategories
-                                habitissimoAPICallSubCategories(category);
+                                category_selected = category;
+                                habitissimoAPICallSubCategories(category_selected);
                             }
                         });
                     }else{
@@ -368,21 +363,21 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                     return;
                 }
 
-                subcats.clear();
+                List<String> subcat_names = new ArrayList<>();
 
                 // Response is successful
-                List<Category> subcategories = response.body();
+                subcategories = response.body();
                 for (Category subcategory : subcategories) {
 
                     // Print JSON Object
                     Log.d(TAG_API, "Subcategory ID: " + subcategory.getId() + ", name: " + subcategory.getResName());
 
-                    subcats.add(subcategory.getName());
+                    subcat_names.add(subcategory.getName());
                 }
 
                 // Populate ListView with Subcategories
                 list_subcat.setAdapter(new ArrayAdapter<>(getApplicationContext(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
+                        android.R.layout.simple_list_item_1, android.R.id.text1, subcat_names));
                 go_forward_add_quotation(category.getName());
             }
             @Override
@@ -590,27 +585,5 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
             default:
                 break;
         }
-    }
-
-    private int categoryText2Image(String text) {
-        int image = 0;
-        if (text.equals(getString(R.string.cat_construccion))) {
-            image = R.drawable.cat_construccion;
-        } else if (text.equals(getString(R.string.cat_reformas))) {
-            image = R.drawable.cat_reformas;
-        } else if (text.equals(getString(R.string.cat_mudanzas))) {
-            image = R.drawable.cat_mudanzas;
-        } else if (text.equals(getString(R.string.cat_tecnicos))) {
-            image = R.drawable.cat_tecnicos;
-        } else if (text.equals(getString(R.string.cat_obras_menores))) {
-            image = R.drawable.cat_obras_menores;
-        } else if (text.equals(getString(R.string.cat_instaladores))) {
-            image = R.drawable.cat_instaladores;
-        } else if (text.equals(getString(R.string.cat_mantenimiento))) {
-            image = R.drawable.cat_mantenimiento;
-        } else if (text.equals(getString(R.string.cat_tiendas))) {
-            image = R.drawable.cat_tiendas;
-        }
-        return image;
     }
 }

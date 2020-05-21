@@ -17,12 +17,17 @@
     <string name="hint_description">I wish&#8230;</string>
     <string name="hint_location">Town or ZIP Code</string>
     <string name="max_edittext">Maximum lenth 500 chars</string>
+    <string name="share_quotation">Share quotation</string>
     <string name="send">Send</string>
     <string name="next">Continue</string>
     <string name="confirm">Confirm</string>
     <string name="name">Name</string>
     <string name="phone">Phone</string>
     <string name="email">Email</string>
+    <string name="quotation">Quotation</string>
+    <string name="category">Category</string>
+    <string name="subcategory">Subcategory</string>
+    <string name="description">Description</string>
 
     <string name="options_title">What to do with this quotation?</string>
     <string name="options_share">Share</string>

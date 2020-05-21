@@ -16,58 +16,60 @@ public class QuotationAdapter
         extends RecyclerView.Adapter<QuotationAdapter.QuotationViewHolder>
         implements View.OnClickListener
 {
+    // Interface for Button Contact clicked
     public interface ItemClickListener {
-        void onPositionClicked(int position);
+        void onContactClicked(int position);
     }
 
     private View.OnClickListener listener;
-    private ArrayList<Quotation> list;
+    private ArrayList<Quotation> quotation_list;
     private final ItemClickListener item_listener;
 
     public static class QuotationViewHolder
             extends RecyclerView.ViewHolder
             implements View.OnClickListener{
 
+        // Declare Views for Quotation Item
         private ImageView image_category;
         private TextView text_subcategory;
         private TextView text_description;
         private Button button_contact;
         private WeakReference<ItemClickListener> listenerRef;
 
-        Quotation quotation;
-
         public QuotationViewHolder(View itemView, ItemClickListener item_listener) {
             super(itemView);
 
+            // Find views
             listenerRef = new WeakReference<>(item_listener);
             image_category = (ImageView) itemView.findViewById(R.id.image_category);
             text_subcategory = (TextView) itemView.findViewById(R.id.text_subcategory);
             text_description = (TextView) itemView.findViewById(R.id.text_description);
             button_contact = (Button) itemView.findViewById(R.id.button_contact);
             button_contact.setOnClickListener(this);
-            }
+        }
 
-        public void bindAchievement(Quotation a) {
-            quotation = a;
-            image_category.setImageResource(a.category);
-            if(a.subcategory != null) text_subcategory.setText(a.subcategory);
-            if(a.description == null || a.description.isEmpty()){
+        public void bindAchievement(Quotation quot) {
+            // Set Texts/Images to Quotation item
+            image_category.setImageResource(quot.category.getImage());
+            if(quot.subcategory != null) text_subcategory.setText(quot.subcategory.getName());
+            if(quot.description == null || quot.description.isEmpty()){
                 text_description.setVisibility(View.GONE);
             }else{
-                text_description.setText(a.description);
+                text_description.setVisibility(View.VISIBLE);
+                text_description.setText(quot.description);
             }
         }
 
-        // onClick Listener for view
+        // onClick Listener for Button Contact
         @Override
         public void onClick(View v) {
-            listenerRef.get().onPositionClicked(getAdapterPosition());
+            listenerRef.get().onContactClicked(getAdapterPosition());
         }
     }
 
     public QuotationAdapter(ArrayList<Quotation> list, ItemClickListener item_listener) {
         setHasStableIds(true);
-        this.list = list;
+        this.quotation_list = list;
         this.item_listener = item_listener;
     }
 
@@ -83,14 +85,15 @@ public class QuotationAdapter
     }
 
     @Override
-    public void onBindViewHolder(QuotationViewHolder viewHolder, int pos) {
-        Quotation item = list.get(pos);
+    public void onBindViewHolder(QuotationViewHolder viewHolder, int position) {
+        Quotation item = quotation_list.get(position);
         viewHolder.bindAchievement(item);
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return quotation_list.size();
+
     }
 
     public void setOnClickListener(View.OnClickListener listener) {
@@ -99,8 +102,7 @@ public class QuotationAdapter
 
     @Override
     public void onClick(View view) {
-        if(listener != null)
-            listener.onClick(view);
+        if(listener != null) listener.onClick(view);
     }
 
     @Override
