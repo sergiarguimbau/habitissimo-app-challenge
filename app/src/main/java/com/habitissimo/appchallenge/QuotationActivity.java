@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,6 +44,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     private RecyclerView recView_quotation;
     private ArrayList<Quotation> quotations;
 
+    private LinearLayout layout_empty_quotations;
     private BottomSheetBehavior bottomSheetBehavior;
     private FloatingActionButton fab_add_quotation;
 
@@ -51,6 +53,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
 
     private LinearLayout layout_bottom_sheet;
     private ImageView image_back;
+    private TextView text_add_quotation;
     private TextView text_select_category;
     private TextView text_select_subcategory;
     private TextView text_category_selected;
@@ -71,11 +74,22 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     private Button button_send;
 
     // Declare variables
-    int step_add_quotation = 0;
-    final int LAST_STEP_ADD_QUOTATION = 4;
+    final int STEP_ASK_CATEGORIES = 0;
+    final int STEP_ASK_SUBCATEGORIES = 1;
+    final int STEP_ASK_LOCATION = 2;
+    final int STEP_ASK_DESCRIPTION = 3;
+    final int STEP_SEND_QUOTATION = 4;
+    final int STEP_EDIT_QUOTATION = 5;
+    int step_add_quotation = STEP_ASK_CATEGORIES;
+    int edited_position = 0;
+
     HabitissimoAPI habitissimoAPI;
     final String TAG_API = "HabitissimoAPI";
-    List<String> subcats = new ArrayList<>();
+    List<Category> categories = new ArrayList<>();
+    List<Category> subcategories = new ArrayList<>();
+    Category category_selected;
+    Category subcategory_selected;
+    QuotationAdapter quotationAdapter;
 
     @SuppressLint("ClickableViewAccessibility") // Supress Warning ListView setOnTouchListener
     @Override
@@ -86,6 +100,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         setTitle(getString(R.string.quotation_requests));
 
         // Main Layout Views
+        layout_empty_quotations = (LinearLayout) findViewById(R.id.layout_empty_quotations);
         recView_quotation = (RecyclerView) findViewById(R.id.rec_view_quotation);
         fab_add_quotation = (FloatingActionButton) findViewById(R.id.fab_add);
         layout_bottom_sheet = (LinearLayout) findViewById(R.id.layout_bottom_sheet);
@@ -101,6 +116,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         layout_contact = (LinearLayout) findViewById(R.id.layout_contact);
         button_send = (Button) findViewById(R.id.button_send);
 
+        text_add_quotation = (TextView) findViewById(R.id.text_add_quotation);
         text_select_category = (TextView) findViewById(R.id.text_select_category);
         text_select_subcategory = (TextView) findViewById(R.id.text_select_subcategory);
         text_category_selected = (TextView) findViewById(R.id.text_category_selected);
@@ -154,30 +170,20 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         // Subcategory Item selected
         list_subcat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                go_forward_add_quotation(subcats.get(position));
+                subcategory_selected = subcategories.get(position);
+                go_forward_add_quotation(subcategory_selected.getName());
             }
         });
 
-        // Create contact examples
-        final Contact contact_antonio = new Contact("Antonio Llinares", "626 42 39 01", "antonito@email.com", "Palma de Mallorca, 07013");
-        Contact contact_maria = new Contact("María Salvado", "692 39 29 10", "maria@email.com", "Murcia, 30110");
 
         // Create quotation examples
         quotations = new ArrayList<Quotation>();
-        quotations.add(new Quotation(R.drawable.cat_construccion, "Construir muro", "Desearía construir un muro en el patio de mi casa", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_reformas,"Reparación tubería", "Quiero reparar el baño que el cuaarto piso tiene goteras. Necesito ayuda urgente", contact_maria));
-        quotations.add(new Quotation(R.drawable.cat_mudanzas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_mantenimiento,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
-        quotations.add(new Quotation(R.drawable.cat_tecnicos,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
-        quotations.add(new Quotation(R.drawable.cat_tiendas,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_instaladores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_antonio));
-        quotations.add(new Quotation(R.drawable.cat_obras_menores,"Traslado muebles", "Quiero trasladar mi mueble de la tienda a otro lado", contact_maria));
 
         // Button Contact from RecyclerView Item selected
-        final QuotationAdapter quotationAdapter = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
+        quotationAdapter = new QuotationAdapter(quotations, new QuotationAdapter.ItemClickListener() {
             @Override
-            public void onPositionClicked(int position) {
-                openContactDialog(quotations.get(position).contact);
+            public void onContactClicked(int position) {
+                openContactDialog(quotations.get(position).getContact());
             }
         });
 
@@ -194,9 +200,24 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         });
 
         // Populate RecyclerView Quotations
-        recView_quotation.setHasFixedSize(false);
+        recView_quotation.setHasFixedSize(true);
         recView_quotation.setAdapter(quotationAdapter);
         recView_quotation.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+
+        // Check if there are items in RecyclerView
+        if(quotationAdapter.getItemCount() == 0){
+            layout_empty_quotations.setVisibility(View.VISIBLE);
+        }else{
+            layout_empty_quotations.setVisibility(View.GONE);
+        }
+
+        // Click on Layout showing there are no quotations
+        layout_empty_quotations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
 
         // Floating Action Button add new quotation clicked
         fab_add_quotation.setOnClickListener(new View.OnClickListener() {
@@ -250,12 +271,21 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         button_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(step_add_quotation == LAST_STEP_ADD_QUOTATION){
-                    reset_add_quotation();
+                if(step_add_quotation == STEP_SEND_QUOTATION){
+                    // Add new quotation
                     Contact contact = new Contact(text_name.getText().toString(), text_phone.getText().toString(), text_email.getText().toString(), text_location.getText().toString());
-                    quotations.add(new Quotation(categoryText2Image(text_category_selected.getText().toString()), text_subcategory_selected.getText().toString(), text_description_done.getText().toString(), contact));
+                    quotations.add(new Quotation(category_selected, subcategory_selected, text_description_done.getText().toString(), contact));
                     quotationAdapter.notifyDataSetChanged();
+                    reset_add_quotation();
+                }else if(step_add_quotation == STEP_EDIT_QUOTATION) {
+                    // Save edited quotation
+                    Quotation edited_quotation = quotations.get(edited_position);
+                    edited_quotation.setDescription(editText_description.getText().toString());
+                    quotations.set(edited_position, edited_quotation);
+                    quotationAdapter.notifyDataSetChanged();
+                    reset_add_quotation();
                 }else{
+                    // Show fill contact details dialog
                     openFillContactDialog();
                 }
             }
@@ -267,11 +297,22 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     public void onOptionMethodClicked(int position, String option) {
 
         if (option.equals(getString(R.string.NT_options_share))) {
-            Toast.makeText(getApplicationContext(), "Share clicked " + position, Toast.LENGTH_SHORT).show();
+            // Share quotation as plain text
+            String share_message = quotations.get(position).printQuotation(getApplicationContext());
+            Intent share = new Intent(android.content.Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.putExtra(Intent.EXTRA_TEXT, share_message);
+            startActivity(Intent.createChooser(share, getString(R.string.share_quotation)));
+
         } else if (option.equals(getString(R.string.NT_options_edit))) {
-            Toast.makeText(getApplicationContext(), "Edit clicked " + position, Toast.LENGTH_SHORT).show();
+            // Edit quotation at selected position
+            edit_quotation(position);
+
         } else if (option.equals(getString(R.string.NT_options_delete))) {
-            Toast.makeText(getApplicationContext(), "Remove clicked " + position, Toast.LENGTH_SHORT).show();
+            // Remove quotation item (without animations)
+            quotations.remove(position);
+            quotationAdapter.notifyDataSetChanged();
+            if(quotationAdapter.getItemCount() == 0) layout_empty_quotations.setVisibility(View.VISIBLE);
         }
     }
 
@@ -299,7 +340,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 }
 
                 // Response is successful
-                List<Category> categories = response.body();
+                categories = response.body();
                 for (Category category : categories) {
 
                     // Print JSON Object
@@ -308,10 +349,11 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                     // Build category resource name to find image and text resources
                     String res_name = "cat_" + category.getResName().replace("-","_");
                     int image_id = getResources().getIdentifier(res_name, "drawable", getPackageName());
-                    int text_id = getResources().getIdentifier(res_name, "string", getPackageName());
 
                     // Validate resource IDs
-                    if(image_id != 0 && text_id != 0){
+                    if(image_id != 0){
+
+                        category.setImage(image_id);
 
                         // Create new item category
                         final View view_category = getLayoutInflater().inflate(R.layout.item_category, grid_category, false);
@@ -319,20 +361,20 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
 
                         // Set Text and Image (validated resource IDs)
                         ImageView cat_image = (ImageView) view_category.findViewById(R.id.image_category);
-                        cat_image.setImageResource(image_id);
+                        cat_image.setImageResource(category.getImage());
                         TextView cat_text = (TextView) view_category.findViewById(R.id.text_category);
-                        cat_text.setText(text_id);
+                        cat_text.setText(category.getName());
 
                         // Add View to parent Grid Layout
                         grid_category.addView(view_category);
-                        final String selected_category = getString(text_id);
 
                         // Category Item selected
                         view_category.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 // Populate ListView with Subcategories
-                                habitissimoAPICallSubCategories(category);
+                                category_selected = category;
+                                habitissimoAPICallSubCategories(category_selected);
                             }
                         });
                     }else{
@@ -359,21 +401,21 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                     return;
                 }
 
-                subcats.clear();
+                List<String> subcat_names = new ArrayList<>();
 
                 // Response is successful
-                List<Category> subcategories = response.body();
+                subcategories = response.body();
                 for (Category subcategory : subcategories) {
 
                     // Print JSON Object
                     Log.d(TAG_API, "Subcategory ID: " + subcategory.getId() + ", name: " + subcategory.getResName());
 
-                    subcats.add(subcategory.getName());
+                    subcat_names.add(subcategory.getName());
                 }
 
                 // Populate ListView with Subcategories
                 list_subcat.setAdapter(new ArrayAdapter<>(getApplicationContext(),
-                        android.R.layout.simple_list_item_1, android.R.id.text1, subcats));
+                        android.R.layout.simple_list_item_1, android.R.id.text1, subcat_names));
                 go_forward_add_quotation(category.getName());
             }
             @Override
@@ -460,38 +502,68 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     }
 
     private void go_forward_add_quotation(String param){
-        step_add_quotation++;
-        update_add_quotation();
-
         switch (step_add_quotation){
-            case 1:
+            case STEP_ASK_CATEGORIES:
                 text_category_selected.setText(param);
                 break;
-            case 2:
+            case STEP_ASK_SUBCATEGORIES:
                 text_subcategory_selected.setText(param);
                 break;
-            case 3:
+            case STEP_ASK_LOCATION:
                 text_location_done.setText(param);
                 break;
-            case 4:
+            case STEP_ASK_DESCRIPTION:
                 text_description_done.setText(param);
                 break;
             default:
                 break;
         }
+
+        step_add_quotation++;
+        update_add_quotation();
     }
 
     private void reset_add_quotation(){
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        step_add_quotation = 0;
+        layout_empty_quotations.setVisibility(View.GONE);
+        step_add_quotation = STEP_ASK_CATEGORIES;
+        text_add_quotation.setText(R.string.add_quotation);
+        fab_add_quotation.setImageResource(R.drawable.ic_add);
         autoText_location.getText().clear();
         editText_description.getText().clear();
         update_add_quotation();
     }
 
+    private void edit_quotation(int position){
+
+        // Non-editable fields
+        text_category_selected.setText(quotations.get(position).getCategory().getName());
+        text_subcategory_selected.setText(quotations.get(position).getSubcategory().getName());
+
+        // Editable fields (only description for now)
+        editText_description.setText(quotations.get(position).getDescription());
+
+        // Show contact details (could be editable in a future update)
+        text_name.setText(quotations.get(position).getContact().getName());
+        text_phone.setText(quotations.get(position).getContact().getPhone());
+        text_email.setText(quotations.get(position).getContact().getEmail());
+        text_location.setText(quotations.get(position).getContact().getLocation());
+
+        // Modify title of Bottom Sheet layout
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        text_add_quotation.setText(R.string.edit_quotation);
+        fab_add_quotation.setImageResource(R.drawable.ic_edit);
+
+        // Update step quotation
+        step_add_quotation = STEP_EDIT_QUOTATION;
+        edited_position = position;
+        update_add_quotation();
+    }
+
     private void update_add_quotation(){
         switch (step_add_quotation){
-            case 0:
+
+            case STEP_ASK_CATEGORIES:
                 image_back.setVisibility(View.INVISIBLE);
                 text_category_selected.setVisibility(View.GONE);
                 text_select_subcategory.setVisibility(View.GONE);
@@ -508,7 +580,8 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 layout_contact.setVisibility(View.GONE);
                 button_send.setVisibility(View.GONE);
                 break;
-            case 1:
+
+            case STEP_ASK_SUBCATEGORIES:
                 image_back.setVisibility(View.VISIBLE);
                 text_category_selected.setVisibility(View.VISIBLE);
                 text_select_subcategory.setVisibility(View.VISIBLE);
@@ -525,7 +598,8 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 layout_contact.setVisibility(View.GONE);
                 button_send.setVisibility(View.GONE);
                 break;
-            case 2:
+
+            case STEP_ASK_LOCATION:
                 image_back.setVisibility(View.VISIBLE);
                 text_category_selected.setVisibility(View.VISIBLE);
                 text_select_subcategory.setVisibility(View.VISIBLE);
@@ -542,7 +616,8 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 layout_contact.setVisibility(View.GONE);
                 button_send.setVisibility(View.GONE);
                 break;
-            case 3:
+
+            case STEP_ASK_DESCRIPTION:
                 image_back.setVisibility(View.VISIBLE);
                 text_category_selected.setVisibility(View.VISIBLE);
                 text_select_subcategory.setVisibility(View.VISIBLE);
@@ -560,7 +635,8 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 button_send.setVisibility(View.VISIBLE);
                 button_send.setText(R.string.next);
                 break;
-            case 4:
+
+            case STEP_SEND_QUOTATION:
                 image_back.setVisibility(View.VISIBLE);
                 text_category_selected.setVisibility(View.VISIBLE);
                 text_select_subcategory.setVisibility(View.VISIBLE);
@@ -578,30 +654,28 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
                 button_send.setVisibility(View.VISIBLE);
                 button_send.setText(R.string.send);
                 break;
+
+            case STEP_EDIT_QUOTATION:
+                image_back.setVisibility(View.INVISIBLE);
+                text_category_selected.setVisibility(View.VISIBLE);
+                text_select_subcategory.setVisibility(View.VISIBLE);
+                text_subcategory_selected.setVisibility(View.VISIBLE);
+                text_put_description.setVisibility(View.VISIBLE);
+                text_description_done.setVisibility(View.GONE);
+                text_put_location.setVisibility(View.GONE);
+                text_location_done.setVisibility(View.GONE);
+                text_put_contact.setVisibility(View.VISIBLE);
+                grid_category.setVisibility(View.GONE);
+                list_subcat.setVisibility(View.GONE);
+                autoText_location.setVisibility(View.GONE);
+                editText_description.setVisibility(View.VISIBLE);
+                layout_contact.setVisibility(View.VISIBLE);
+                button_send.setVisibility(View.VISIBLE);
+                button_send.setText(R.string.save);
+                break;
+
             default:
                 break;
         }
-    }
-
-    private int categoryText2Image(String text) {
-        int image = 0;
-        if (text.equals(getString(R.string.cat_construccion))) {
-            image = R.drawable.cat_construccion;
-        } else if (text.equals(getString(R.string.cat_reformas))) {
-            image = R.drawable.cat_reformas;
-        } else if (text.equals(getString(R.string.cat_mudanzas))) {
-            image = R.drawable.cat_mudanzas;
-        } else if (text.equals(getString(R.string.cat_tecnicos))) {
-            image = R.drawable.cat_tecnicos;
-        } else if (text.equals(getString(R.string.cat_obras_menores))) {
-            image = R.drawable.cat_obras_menores;
-        } else if (text.equals(getString(R.string.cat_instaladores))) {
-            image = R.drawable.cat_instaladores;
-        } else if (text.equals(getString(R.string.cat_mantenimiento))) {
-            image = R.drawable.cat_mantenimiento;
-        } else if (text.equals(getString(R.string.cat_tiendas))) {
-            image = R.drawable.cat_tiendas;
-        }
-        return image;
     }
 }

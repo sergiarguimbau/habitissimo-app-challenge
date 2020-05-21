@@ -5,9 +5,12 @@
     <string name="contact_details">Contact Details</string>
     <string name="contact_copy">Name: %1$s\nPhone: %2$s\nEmail: %3$s\nLocation: %4$s</string>
     <string name="contact_copied">Contact Details copied to clipboard!</string>
+    <string name="contact_validate">Contact Details are invalid</string>
 
+    <string name="first_quotation">Create your first\nquotation</string>
     <string name="quotation_requests">My Quotation Requests</string>
-    <string name="new_quotation">Ask for Quotation</string>
+    <string name="add_quotation">Ask for Quotation</string>
+    <string name="edit_quotation">Edit Quotation</string>
     <string name="select_category">What do you need?</string>
     <string name="select_subcategory">Select a service:</string>
     <string name="put_description">Describe the work to do:</string>
@@ -16,15 +19,18 @@
     <string name="hint_description">I wish&#8230;</string>
     <string name="hint_location">Town or ZIP Code</string>
     <string name="max_edittext">Maximum lenth 500 chars</string>
+    <string name="share_quotation">Share quotation</string>
     <string name="send">Send</string>
     <string name="next">Continue</string>
     <string name="confirm">Confirm</string>
+    <string name="save">Save</string>
     <string name="name">Name</string>
     <string name="phone">Phone</string>
     <string name="email">Email</string>
-
-
-
+    <string name="quotation">Quotation</string>
+    <string name="category">Category</string>
+    <string name="subcategory">Subcategory</string>
+    <string name="description">Description</string>
 
     <string name="options_title">What to do with this quotation?</string>
     <string name="options_share">Share</string>
@@ -40,10 +46,13 @@
     <string name="cat_mantenimiento">Maintenance</string>
     <string name="cat_tiendas">Stores</string>
 
-
     <string name="NT_options_share" translatable="false">quotation_share</string>
     <string name="NT_options_edit" translatable="false">quotation_edit</string>
     <string name="NT_options_delete" translatable="false">quotation_delete</string>
+
+    <string name="key_name" translatable="false">key_name</string>
+    <string name="key_phone" translatable="false">key_phone</string>
+    <string name="key_email" translatable="false">key_email</string>
 
 
 </resources>

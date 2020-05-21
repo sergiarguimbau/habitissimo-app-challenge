@@ -8,11 +8,12 @@
     android:animateLayoutChanges="true">
 
     <TextView
+        android:id="@+id/text_add_quotation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/text_medium"
-        android:text="@string/new_quotation"
+        android:text="@string/add_quotation"
         android:textStyle="bold"
         android:textAllCaps="true"
         android:textColor="@android:color/background_light" />
@@ -128,6 +129,20 @@
         android:textColor="@android:color/background_light"
         android:visibility="gone"/>
 
+    <EditText
+        android:id="@+id/edittext_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_big"
+        android:layout_marginEnd="@dimen/margin_big"
+        android:padding="@dimen/margin_small"
+        android:background="@android:color/background_light"
+        android:hint="@string/hint_description"
+        android:maxLength="500"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/text_description_done"
         android:layout_width="wrap_content"
@@ -187,20 +202,6 @@
         android:maxLength="50"
         android:maxLines="1"
         android:hint="@string/hint_location"
-        android:visibility="gone"/>
-
-    <EditText
-        android:id="@+id/edittext_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginStart="@dimen/margin_big"
-        android:layout_marginEnd="@dimen/margin_big"
-        android:padding="@dimen/margin_small"
-        android:background="@android:color/background_light"
-        android:hint="@string/hint_description"
-        android:maxLength="500"
         android:visibility="gone"/>
 
     <LinearLayout

@@ -42,4 +42,28 @@ public class Location {
     public double getLng() {
         return lng;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setResName(String res_name) {
+        this.res_name = res_name;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
 }
