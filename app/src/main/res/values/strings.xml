@@ -7,6 +7,7 @@
     <string name="contact_copied">Contact Details copied to clipboard!</string>
     <string name="contact_validate">Contact Details are invalid</string>
 
+    <string name="first_quotation">Create your first\nquotation</string>
     <string name="quotation_requests">My Quotation Requests</string>
     <string name="add_quotation">Ask for Quotation</string>
     <string name="edit_quotation">Edit Quotation</string>

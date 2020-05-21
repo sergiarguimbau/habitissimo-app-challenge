@@ -44,6 +44,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
     private RecyclerView recView_quotation;
     private ArrayList<Quotation> quotations;
 
+    private LinearLayout layout_empty_quotations;
     private BottomSheetBehavior bottomSheetBehavior;
     private FloatingActionButton fab_add_quotation;
 
@@ -99,6 +100,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         setTitle(getString(R.string.quotation_requests));
 
         // Main Layout Views
+        layout_empty_quotations = (LinearLayout) findViewById(R.id.layout_empty_quotations);
         recView_quotation = (RecyclerView) findViewById(R.id.rec_view_quotation);
         fab_add_quotation = (FloatingActionButton) findViewById(R.id.fab_add);
         layout_bottom_sheet = (LinearLayout) findViewById(R.id.layout_bottom_sheet);
@@ -202,6 +204,21 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
         recView_quotation.setAdapter(quotationAdapter);
         recView_quotation.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
 
+        // Check if there are items in RecyclerView
+        if(quotationAdapter.getItemCount() == 0){
+            layout_empty_quotations.setVisibility(View.VISIBLE);
+        }else{
+            layout_empty_quotations.setVisibility(View.GONE);
+        }
+
+        // Click on Layout showing there are no quotations
+        layout_empty_quotations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+
         // Floating Action Button add new quotation clicked
         fab_add_quotation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -295,6 +312,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
             // Remove quotation item (without animations)
             quotations.remove(position);
             quotationAdapter.notifyDataSetChanged();
+            if(quotationAdapter.getItemCount() == 0) layout_empty_quotations.setVisibility(View.VISIBLE);
         }
     }
 
@@ -507,6 +525,7 @@ public class QuotationActivity extends AppCompatActivity implements DialogBottom
 
     private void reset_add_quotation(){
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        layout_empty_quotations.setVisibility(View.GONE);
         step_add_quotation = STEP_ASK_CATEGORIES;
         text_add_quotation.setText(R.string.add_quotation);
         fab_add_quotation.setImageResource(R.drawable.ic_add);

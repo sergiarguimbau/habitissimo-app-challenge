@@ -5,6 +5,7 @@
     <string name="contact_copied">Datos de Contacto copiados al portapapeles</string>
     <string name="contact_validate">Los datos de contacto no son válidos</string>
 
+    <string name="first_quotation">Crea tu primer\npresupuesto</string>
     <string name="quotation_requests">Mis Solicitudes de Presupuesto</string>
     <string name="add_quotation">Pedir presupuesto</string>
     <string name="edit_quotation">Editar presupuesto</string>

@@ -13,6 +13,32 @@
         android:clipToPadding="false"
         android:paddingBottom="64dp" />
 
+    <LinearLayout
+        android:id="@+id/layout_empty_quotations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/margin_huge"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="@dimen/image_huge"
+            android:layout_height="@dimen/image_huge"
+            android:layout_gravity="center"
+            android:src="@drawable/list" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:textAlignment="center"
+            android:text="@string/first_quotation"
+            android:textSize="@dimen/text_huge"/>
+
+    </LinearLayout>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/bottom_sheet_add_quotation"
         android:layout_width="match_parent"
